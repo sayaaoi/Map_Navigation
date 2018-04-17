@@ -5,25 +5,23 @@ Author: Yuejun Wu
 import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
+import sys
 
 class Navigation:
     def __init__(self, node_file, edge_file, disable:bool):
         """
         Constructor of Navigation. It instantiates a graph with nodes and edges
+
         :param node_file: node id and its attributes
         :param edge_file: nodes connect edges and edge attributes
-        :param disable: whether instantiates a ADA route or not
+        :param disable: whether instantiates an ADA route or not
         """
         self._map = self.build_map(nx.DiGraph(),node_file, edge_file, disable)
 
     def build_map(self, graph, node_file, edge_file, disable: bool):
         """
         Helper function to construct instances
-        :param graph:
-        :param node_file:
-        :param edge_file:
-        :param disable:
-        :return:
+
         """
         node_list = pd.read_csv(node_file)
         edge_list = pd.read_csv(edge_file)
@@ -52,6 +50,15 @@ class Navigation:
     def set_node_name(self, node, new_name: str):
         if isinstance(new_name,str):
             self._map.nodes.data()[node]['attr']['name'] = new_name
+
+    def print_all_attractions(self):
+        for (idx, attr) in self._map.nodes.items():
+            print(idx, attr['attr']['name'])
+
+    def get_nodes_attributes(self, node):
+        for attributes in self._map.nodes.data()[node]['attr']:
+            if attributes not in ('x_coord', 'y_coord'):
+                print(attributes,": ", self._map.nodes.data()[node]['attr'][attributes])
 
     def disabled_friendly_node(self, node) ->bool:
         """
@@ -88,6 +95,7 @@ class Navigation:
 
     def shortest_path(self, start, end):
         path_list = nx.shortest_path(self._map, start, end)
+        print(path_list)
         return [(idx,self._map.nodes.data()[idx]['attr']['name']) for idx in path_list]
 
     def print_shortest_route(self, start, end):
@@ -101,10 +109,20 @@ class Navigation:
                 print("Then, take the way to {0}: {1}".format(path[0],path[1]))
 
     def find_nearest_bathroom(self, cur_location):
-        pass
+        dist = sys.maxsize
+        for bathroom in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['attr']['has_bathroom'] == 1]:
+            if dist > nx.shortest_path_length(self._map,cur_location, bathroom):
+                dist = nx.shortest_path_length(self._map,cur_location, bathroom)
+                attr_num = bathroom
+        return (attr_num, self.get_node_name(attr_num))
 
     def find_nearest_foodplace(self, cur_location):
-        pass
+        dist = sys.maxsize
+        for food in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['attr']['has_food'] == 1]:
+            if dist > nx.shortest_path_length(self._map, cur_location, food):
+                dist = nx.shortest_path_length(self._map, cur_location, food)
+                attr_num = food
+        return (attr_num, self.get_node_name(attr_num))
 
     def draw_map(self):
         # nx.draw(self._map)
@@ -122,7 +140,11 @@ gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
 #print(gs.get_edge_weight(19,28))
 #gs.set_edge_weight(19,28, 40)
 #print(gs.get_edge_weight(19,28))
-print(gs.all_disabled_friendly_node())
+#print(gs.all_disabled_friendly_node())
+#gs.get_nodes_attributes(9)
+print(gs.find_nearest_bathroom(9))
+#gs.shortest_path(9,20)
+#gs.print_all_attractions()
 #print(gs.get_node_name(9))
 #print(gs.all_disabled_friendly_node())
 #gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
