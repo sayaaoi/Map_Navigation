@@ -8,9 +8,23 @@ import pandas as pd
 
 class Navigation:
     def __init__(self, node_file, edge_file, disable:bool):
+        """
+        Constructor of Navigation. It instantiates a graph with nodes and edges
+        :param node_file: node id and its attributes
+        :param edge_file: nodes connect edges and edge attributes
+        :param disable: whether instantiates a ADA route or not
+        """
         self._map = self.build_map(nx.DiGraph(),node_file, edge_file, disable)
 
     def build_map(self, graph, node_file, edge_file, disable: bool):
+        """
+        Helper function to construct instances
+        :param graph:
+        :param node_file:
+        :param edge_file:
+        :param disable:
+        :return:
+        """
         node_list = pd.read_csv(node_file)
         edge_list = pd.read_csv(edge_file)
         for idx, node_attr in node_list.iterrows():
@@ -23,42 +37,44 @@ class Navigation:
         return graph
 
     def get_edge_weight(self, node1, node2):
-        pass
+        if isinstance(node1,int) and isinstance(node2, int):
+            return self._map[node1][node2]['attr']['distance']
 
-    def set_edge_weight(self, node1, node2):
-        pass
+    def set_edge_weight(self, node1, node2, new_distance:float):
+        if isinstance(node1, int) and isinstance(node2, int) and \
+                (isinstance(new_distance, float) or isinstance(new_distance, int)):
+            self._map[node1][node2]['attr']['distance'] = new_distance
 
-    def add_edge(self, node1, node2):
-        pass
+    def get_node_name(self, node: int) ->str:
+        if isinstance(node,int):
+            return self._map.nodes.data()[node]['attr']['name']
 
-    def remove_edge(self,node1, node2):
-        pass
+    def set_node_name(self, node, new_name: str):
+        if isinstance(new_name,str):
+            self._map.nodes.data()[node]['attr']['name'] = new_name
 
-    def add_node(self):
-        pass
-
-    def remove_node(self, index):
-        pass
-
-    def get_node_name(self, node):
-        pass
-
-    def set_node_name(self, node):
-        pass
-
-    def get_accessibility_node(self, node) ->bool:
+    def disabled_friendly_node(self, node) ->bool:
         """
         check if a certain node/attraction is available for disabled people
         :param node:
         :return:
         """
-        pass
+        return self._map.nodes.data()[node]['attr']['disabled_accessibility'] == 1
+
+    def all_disabled_friendly_node(self):
+        attractions = ""
+        for attraction in self._map.nodes():
+            if self.disabled_friendly_node(attraction):
+                attractions += str(attraction) + ": "
+                attractions += self.get_node_name(attraction) + "\n"
+        print ("All disabled friendly attractions are: ")
+        return attractions
 
     def attraction_open(self, current_time) ->bool:
         """
         check if a certain attraction is open at current time
-        :param current_time:
-        :return:
+        :param current_time: current time
+        :return: all attractions that are still open
         """
         pass
 
@@ -74,7 +90,7 @@ class Navigation:
         path_list = nx.shortest_path(self._map, start, end)
         return [(idx,self._map.nodes.data()[idx]['attr']['name']) for idx in path_list]
 
-    def show_shortest_route(self, start, end):
+    def print_shortest_route(self, start, end):
         paths = self.shortest_path(start, end)
         for i, path in enumerate(paths):
             if i == 0:
@@ -91,21 +107,28 @@ class Navigation:
         pass
 
     def draw_map(self):
-        nx.draw(self._map)
-        return plt.show()
+        # nx.draw(self._map)
+        # return plt.show()
+        pass
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
 
 
 ## tests:
-gs = Navigation("data/node_list2.csv","data/edge_list.csv", False)
+gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
 # print(gs.shortest_path(10,28))
-gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
+#print(gs.get_edge_weight(19,28))
+#gs.set_edge_weight(19,28, 40)
+#print(gs.get_edge_weight(19,28))
+print(gs.all_disabled_friendly_node())
+#print(gs.get_node_name(9))
+#print(gs.all_disabled_friendly_node())
+#gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
 # print(gs2.shortest_path(18,12))
 # print(gs2.shortest_path(10,28))
-gs.show_shortest_route(18,12)
+#gs.show_shortest_route(18,12)
 
 # gs.visualization()
 # gs2.visualization()
