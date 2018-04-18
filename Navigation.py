@@ -26,39 +26,63 @@ class Navigation:
         node_list = pd.read_csv(node_file)
         edge_list = pd.read_csv(edge_file)
         for idx, node_attr in node_list.iterrows():
-            graph.add_node(node_attr[0], attr = node_attr[1:].to_dict())
+            attr = {'name': node_attr[1],
+                    'disabled_accessibility':node_attr[2],
+                    'open time': node_attr[3],
+                    'close time': node_attr[4],
+                    'average waiting time': node_attr[5],
+                    'has_bathroom':node_attr[6],
+                    'has_food':node_attr[7],
+                    'fee':node_attr[8],
+                    'type':node_attr[9],
+                    'x_coord':node_attr[12],
+                    'y_coord':node_attr[13]
+                    }
+            graph.add_node(node_attr[0], name = attr['name'], disabled_accessibility = attr['disabled_accessibility'],
+                           open_time = attr['open time'], close_time = attr['close time'], avg_wait_time = attr['average waiting time'],
+                           has_bathroom = attr['has_bathroom'], has_food = attr['has_food'], fee = attr['fee'], type = attr['type'],
+                           x_coord = attr['x_coord'], y_coord = attr['y_coord'])
         for idx, edge_attr in edge_list.iterrows():
+            attr = {'weight': edge_attr[2],
+                    'type': edge_attr[3],
+                    'disable_accessbility': edge_attr[4],
+                    'direction': edge_attr[5]}
             if disable and edge_attr[4] == 1:
-                graph.add_edge(edge_attr[0], edge_attr[1], attr=edge_attr[2:].to_dict())
+                graph.add_edge(edge_attr[0], edge_attr[1], weight = attr['weight'], type = attr['type'],
+                               disable_accessbility = attr['disable_accessbility'],
+                                direction = attr['direction'])
             if not disable:
-                graph.add_edge(edge_attr[0], edge_attr[1], attr=edge_attr[2:].to_dict())
+                graph.add_edge(edge_attr[0], edge_attr[1], weight = attr['weight'], type = attr['type'],
+                                disable_accessbility = attr['disable_accessbility'],
+                                direction = attr['direction'])
         return graph
 
     def get_edge_weight(self, node1, node2):
         if isinstance(node1,int) and isinstance(node2, int):
-            return self._map[node1][node2]['attr']['distance']
+            print(self._map[9][20])
+            return self._map[node1][node2]['weight']
 
     def set_edge_weight(self, node1, node2, new_distance:float):
         if isinstance(node1, int) and isinstance(node2, int) and \
                 (isinstance(new_distance, float) or isinstance(new_distance, int)):
-            self._map[node1][node2]['attr']['distance'] = new_distance
+            self._map[node1][node2]['weight'] = new_distance
 
     def get_node_name(self, node: int) ->str:
         if isinstance(node,int):
-            return self._map.nodes.data()[node]['attr']['name']
+            return self._map.nodes.data()[node]['name']
 
     def set_node_name(self, node, new_name: str):
         if isinstance(new_name,str):
-            self._map.nodes.data()[node]['attr']['name'] = new_name
+            self._map.nodes.data()[node]['name'] = new_name
 
     def print_all_attractions(self):
         for (idx, attr) in self._map.nodes.items():
-            print(idx, attr['attr']['name'])
+            print(idx, attr['name'])
 
     def get_nodes_attributes(self, node):
-        for attributes in self._map.nodes.data()[node]['attr']:
+        for attributes in self._map.nodes.data()[node]:
             if attributes not in ('x_coord', 'y_coord'):
-                print(attributes,": ", self._map.nodes.data()[node]['attr'][attributes])
+                print(attributes,": ", self._map.nodes.data()[node][attributes])
 
     def disabled_friendly_node(self, node) ->bool:
         """
@@ -66,7 +90,7 @@ class Navigation:
         :param node:
         :return:
         """
-        return self._map.nodes.data()[node]['attr']['disabled_accessibility'] == 1
+        return self._map.nodes.data()[node]['disabled_accessibility'] == 1
 
     def all_disabled_friendly_node(self):
         attractions = ""
@@ -94,9 +118,9 @@ class Navigation:
         pass
 
     def shortest_path(self, start, end):
-        path_list = nx.shortest_path(self._map, start, end)
+        path_list = nx.dijkstra_path(self._map, start, end)
         print(path_list)
-        return [(idx,self._map.nodes.data()[idx]['attr']['name']) for idx in path_list]
+        return [(idx,self._map.nodes.data()[idx]['name']) for idx in path_list]
 
     def print_shortest_route(self, start, end):
         paths = self.shortest_path(start, end)
@@ -109,18 +133,24 @@ class Navigation:
                 print("Then, take the way to {0}: {1}".format(path[0],path[1]))
 
     def find_nearest_bathroom(self, cur_location):
+        """
+        >>> gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
+        >>> print(gs.find_nearest_bathroom(9))
+        (20, 'Archaeological Zones')
+        """
         dist = sys.maxsize
-        for bathroom in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['attr']['has_bathroom'] == 1]:
-            if dist > nx.shortest_path_length(self._map,cur_location, bathroom):
-                dist = nx.shortest_path_length(self._map,cur_location, bathroom)
+        for bathroom in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['has_bathroom'] == 1]:
+            if dist > nx.dijkstra_path_length(self._map,cur_location, bathroom):
+                dist = nx.dijkstra_path_length(self._map,cur_location, bathroom)
                 attr_num = bathroom
+        print(self._map.get_edge_data(9,20))
         return (attr_num, self.get_node_name(attr_num))
 
     def find_nearest_foodplace(self, cur_location):
         dist = sys.maxsize
-        for food in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['attr']['has_food'] == 1]:
-            if dist > nx.shortest_path_length(self._map, cur_location, food):
-                dist = nx.shortest_path_length(self._map, cur_location, food)
+        for food in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['has_food'] == 1]:
+            if dist > nx.dijkstra_path_length(self._map, cur_location, food):
+                dist = nx.dijkstra_path_length(self._map, cur_location, food)
                 attr_num = food
         return (attr_num, self.get_node_name(attr_num))
 
@@ -140,9 +170,10 @@ gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
 #print(gs.get_edge_weight(19,28))
 #gs.set_edge_weight(19,28, 40)
 #print(gs.get_edge_weight(19,28))
-#print(gs.all_disabled_friendly_node())
-#gs.get_nodes_attributes(9)
-print(gs.find_nearest_bathroom(9))
+print(gs.all_disabled_friendly_node())
+# gs.get_nodes_attributes(9)
+# print(gs.find_nearest_bathroom(9))
+print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 #gs.print_all_attractions()
 #print(gs.get_node_name(9))
