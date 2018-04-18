@@ -6,6 +6,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 import sys
+from datetime import datetime
+import time
 
 class Navigation:
     def __init__(self, node_file, edge_file, disable:bool):
@@ -109,13 +111,33 @@ class Navigation:
         print ("All disabled friendly attractions are: ")
         return attractions
 
-    def attraction_open(self, current_time) ->bool:
+    def format_time(self, hourstring:str):
+        if len(hourstring) == 3:
+            format_time = hourstring[:-2].ljust(3,'0') + hourstring[-2:]
+            format_time.zfill(6)
+        elif len(hourstring) == 4:
+            format_time = hourstring[:-2].ljust(4,'0')+ hourstring[-2:]
+        elif len(hourstring) == 5:
+            format_time = hourstring.zfill(6)
+        else:
+            format_time = hourstring
+        time_format = "%I%M%p"
+        return datetime.strptime(format_time, time_format)
+
+    def attractions_open(self, current_time) ->bool:
         """
-        check if a certain attraction is open at current time
+        return all attractions that are open at current time
         :param current_time: current time
         :return: all attractions that are still open
         """
-        pass
+        open_attraction = []
+        for attraction in self._map.nodes():
+            if self.format_time(current_time) >= self.format_time(self._map.nodes[attraction]['open_time']):
+                open_attraction.append((attraction, self.get_node_name(attraction)))
+        if len(open_attraction) == 0:
+            return "Sorry, no attraction is open."
+        else:
+            return open_attraction
 
     def go_through_all_nodes(self) ->bool:
         """
@@ -195,7 +217,9 @@ gs = Navigation("data/node_list2.csv","data/edge_list3.csv", True)
 #print(gs.all_disabled_friendly_node())
 #gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
 #print(gs.shortest_path(18,12))
-print(gs.go_through_all_nodes())
+#print(gs.go_through_all_nodes())
+print(gs.attractions_open('110am'))
+
 # print(gs2.shortest_path(10,28))
 #gs.show_shortest_route(18,12)
 #print(gs.get_direction(9,20))
