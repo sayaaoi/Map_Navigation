@@ -117,16 +117,21 @@ class Navigation:
         """
         pass
 
-    def go_through_all_nodes(self, edge_list: list) ->bool:
+    def go_through_all_nodes(self) ->bool:
         """
         check if from every node can arrive at any other node in the map
         :param edge_list:
         :return:
         """
-        pass
+        for node1 in self._map.nodes():
+            for node2 in self._map.nodes():
+                if not nx.has_path(self._map, node1, node2):
+                    print(node1, node2)
+                    return False
+        return True
 
-    def shortest_path(self, start, end):
-        path_list = nx.dijkstra_path(self._map, start, end)
+    def shortest_path(self, start, end, weight = 'weight'):
+        path_list = nx.dijkstra_path(self._map, start, end, weight)
         return [(idx,self._map.nodes.data()[idx]['name']) for idx in path_list]
 
     def print_shortest_route(self, start, end):
@@ -139,12 +144,14 @@ class Navigation:
             else:
                 print("Then, take the way to {0}: {1}".format(path[0],path[1]))
 
-    def find_nearest_bathroom(self, cur_location):
+    def find_nearest_bathroom(self, cur_location: int) -> tuple:
         """
         >>> gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
         >>> print(gs.find_nearest_bathroom(9))
         (20, 'Archaeological Zones')
         """
+        if self._map.nodes[cur_location]['has_bathroom'] == 1:
+            return 'Your current location has a bathroom.'
         dist = sys.maxsize
         for bathroom in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['has_bathroom'] == 1]:
             if dist > nx.dijkstra_path_length(self._map,cur_location, bathroom):
@@ -153,6 +160,8 @@ class Navigation:
         return (attr_num, self.get_node_name(attr_num))
 
     def find_nearest_foodplace(self, cur_location):
+        if self._map.nodes[cur_location]['has_food'] == 1:
+            print('Your current location has a place for food.')
         dist = sys.maxsize
         for food in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['has_food'] == 1]:
             if dist > nx.dijkstra_path_length(self._map, cur_location, food):
@@ -171,24 +180,25 @@ class Navigation:
 
 
 ## tests:
-gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
+gs = Navigation("data/node_list2.csv","data/edge_list3.csv", True)
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
 #gs.set_edge_weight(19,28, 40)
 #print(gs.get_edge_weight(19,28))
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
-#print(gs.find_nearest_bathroom(9))
+#print(gs.find_nearest_bathroom(12))
 #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
 #print(gs.get_node_name(9))
 #print(gs.all_disabled_friendly_node())
 #gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
-# print(gs2.shortest_path(18,12))
+#print(gs.shortest_path(18,12))
+print(gs.go_through_all_nodes())
 # print(gs2.shortest_path(10,28))
 #gs.show_shortest_route(18,12)
-print(gs.get_direction(9,20))
+#print(gs.get_direction(9,20))
 # gs.visualization()
 # gs2.visualization()
 
