@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 from datetime import datetime
-import time
+import math
 
 class Navigation:
     def __init__(self, node_file, edge_file, disable:bool):
@@ -43,7 +43,7 @@ class Navigation:
             graph.add_node(node_attr[0], name = attr['name'], disabled_accessibility = attr['disabled_accessibility'],
                            open_time = attr['open time'], close_time = attr['close time'], avg_wait_time = attr['average waiting time'],
                            has_bathroom = attr['has_bathroom'], has_food = attr['has_food'], fee = attr['fee'], type = attr['type'],
-                           x_coord = attr['x_coord'], y_coord = attr['y_coord'])
+                           x_coord = attr['x_coord'], y_coord = attr['y_coord'],pos = (attr['x_coord'],1000 - attr['y_coord']))
         for idx, edge_attr in edge_list.iterrows():
             attr = {'weight': edge_attr[2],
                     'type': edge_attr[3],
@@ -191,10 +191,22 @@ class Navigation:
                 attr_num = food
         return (attr_num, self.get_node_name(attr_num))
 
-    def draw_map(self):
-        # nx.draw(self._map)
-        # return plt.show()
-        pass
+    def draw_map(self, fullmap = True):
+        #nx.draw_networkx_nodes(self._map,pos=nx.get_node_attributes(self._map, 'pos'),node_size=500)
+        #nx.draw(self._map,pos=nx.get_node_attributes(self._map, 'pos'),with_labels=True)
+        color_map = []
+        for node in self._map:
+            if self._map.nodes[node]['type'] == 'entertainment':
+                color_map.append('brown')
+            elif self._map.nodes[node]['type'] == 'culture':
+                color_map.append('blue')
+            else:
+                color_map.append('green')
+        weights = [math.sqrt(math.log(self._map[u][v]['weight'])) for u,v in self._map.edges()]
+        nx.draw(self._map,pos=nx.get_node_attributes(self._map, 'pos'),node_size = 550, node_color = color_map,with_labels=True, \
+                width = weights, arrowsize = 6.5)
+
+        return plt.show()
 
 
 # if __name__ == "__main__":
@@ -203,6 +215,7 @@ class Navigation:
 
 ## tests:
 gs = Navigation("data/node_list2.csv","data/edge_list3.csv", True)
+print(gs.draw_map())
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
 #gs.set_edge_weight(19,28, 40)
@@ -218,7 +231,7 @@ gs = Navigation("data/node_list2.csv","data/edge_list3.csv", True)
 #gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
 #print(gs.shortest_path(18,12))
 #print(gs.go_through_all_nodes())
-print(gs.attractions_open('110am'))
+#print(gs.attractions_open('110am'))
 
 # print(gs2.shortest_path(10,28))
 #gs.show_shortest_route(18,12)
