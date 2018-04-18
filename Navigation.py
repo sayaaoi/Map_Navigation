@@ -59,7 +59,6 @@ class Navigation:
 
     def get_edge_weight(self, node1, node2):
         if isinstance(node1,int) and isinstance(node2, int):
-            print(self._map[9][20])
             return self._map[node1][node2]['weight']
 
     def set_edge_weight(self, node1, node2, new_distance:float):
@@ -75,14 +74,23 @@ class Navigation:
         if isinstance(new_name,str):
             self._map.nodes.data()[node]['name'] = new_name
 
+    def get_direction(self, node1, node2) -> str:
+        direction = {'N': 'north', 'S': 'south', 'W': 'west', 'E': 'east',
+                  'NE': 'northeast', 'NW': 'northwest', 'SW': 'southwest', 'SE': 'southwest'}
+        return direction[self._map[node1][node2]['direction']]
+
     def print_all_attractions(self):
+        sort_attraction = {}
         for (idx, attr) in self._map.nodes.items():
-            print(idx, attr['name'])
+            sort_attraction[idx] = attr['name']
+        all_attractions = sorted(sort_attraction.items(), key = lambda x: x[1])
+        for attraction in all_attractions:
+            print('{:<50} {:>3}'.format(attraction[1], attraction[0]))
 
     def get_nodes_attributes(self, node):
-        for attributes in self._map.nodes.data()[node]:
+        for attributes in self._map.nodes[node]:
             if attributes not in ('x_coord', 'y_coord'):
-                print(attributes,": ", self._map.nodes.data()[node][attributes])
+                print(attributes, ": ", self._map.nodes[node][attributes])
 
     def disabled_friendly_node(self, node) ->bool:
         """
@@ -119,7 +127,6 @@ class Navigation:
 
     def shortest_path(self, start, end):
         path_list = nx.dijkstra_path(self._map, start, end)
-        print(path_list)
         return [(idx,self._map.nodes.data()[idx]['name']) for idx in path_list]
 
     def print_shortest_route(self, start, end):
@@ -143,7 +150,6 @@ class Navigation:
             if dist > nx.dijkstra_path_length(self._map,cur_location, bathroom):
                 dist = nx.dijkstra_path_length(self._map,cur_location, bathroom)
                 attr_num = bathroom
-        print(self._map.get_edge_data(9,20))
         return (attr_num, self.get_node_name(attr_num))
 
     def find_nearest_foodplace(self, cur_location):
@@ -170,19 +176,19 @@ gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
 #print(gs.get_edge_weight(19,28))
 #gs.set_edge_weight(19,28, 40)
 #print(gs.get_edge_weight(19,28))
-print(gs.all_disabled_friendly_node())
-# gs.get_nodes_attributes(9)
-# print(gs.find_nearest_bathroom(9))
-print(gs.get_edge_weight(9,20))
+#print(gs.all_disabled_friendly_node())
+#gs.get_nodes_attributes(9)
+#print(gs.find_nearest_bathroom(9))
+#print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
-#gs.print_all_attractions()
+# gs.print_all_attractions()
 #print(gs.get_node_name(9))
 #print(gs.all_disabled_friendly_node())
 #gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
 # print(gs2.shortest_path(18,12))
 # print(gs2.shortest_path(10,28))
 #gs.show_shortest_route(18,12)
-
+print(gs.get_direction(9,20))
 # gs.visualization()
 # gs2.visualization()
 
