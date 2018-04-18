@@ -192,20 +192,23 @@ class Navigation:
         return (attr_num, self.get_node_name(attr_num))
 
     def draw_map(self, fullmap = True):
-        #nx.draw_networkx_nodes(self._map,pos=nx.get_node_attributes(self._map, 'pos'),node_size=500)
-        #nx.draw(self._map,pos=nx.get_node_attributes(self._map, 'pos'),with_labels=True)
+        fig = plt.figure()
+        plt.title('Xcaret Tourist Map')
         color_map = []
         for node in self._map:
             if self._map.nodes[node]['type'] == 'entertainment':
                 color_map.append('brown')
             elif self._map.nodes[node]['type'] == 'culture':
-                color_map.append('blue')
+                color_map.append('skyblue')
             else:
                 color_map.append('green')
-        weights = [math.sqrt(math.log(self._map[u][v]['weight'])) for u,v in self._map.edges()]
+
+        weights = [(math.log(self._map[u][v]['weight']))/10 for u,v in self._map.edges()]
         nx.draw(self._map,pos=nx.get_node_attributes(self._map, 'pos'),node_size = 550, node_color = color_map,with_labels=True, \
                 width = weights, arrowsize = 6.5)
-
+        fig.set_facecolor('#b6f442')
+        plt.title('Xcaret Tourist Map')
+        #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         return plt.show()
 
 
@@ -214,7 +217,7 @@ class Navigation:
 
 
 ## tests:
-gs = Navigation("data/node_list2.csv","data/edge_list3.csv", True)
+gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
 print(gs.draw_map())
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
