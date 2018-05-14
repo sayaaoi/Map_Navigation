@@ -1,7 +1,3 @@
-"""
-Author: Yuejun Wu
-"""
-
 import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,7 +6,7 @@ from datetime import datetime
 import math
 
 class Navigation:
-    def __init__(self, node_file, edge_file, disable:bool):
+    def __init__(self, node_file, edge_file, disable: bool):
         """
         Constructor of Navigation. It instantiates a graph with nodes and edges
 
@@ -18,7 +14,7 @@ class Navigation:
         :param edge_file: nodes connect edges and edge attributes
         :param disable: whether instantiates an ADA route or not
         """
-        self._map = self.build_map(nx.DiGraph(),node_file, edge_file, disable)
+        self._map = self.build_map(nx.DiGraph(), node_file, edge_file, disable)
 
     def build_map(self, graph, node_file, edge_file, disable: bool):
         """
@@ -60,10 +56,10 @@ class Navigation:
         return graph
 
     def get_edge_weight(self, node1, node2):
-        if isinstance(node1,int) and isinstance(node2, int):
+        if isinstance(node1, int) and isinstance(node2, int):
             return self._map[node1][node2]['weight']
 
-    def set_edge_weight(self, node1, node2, new_distance:float):
+    def set_edge_weight(self, node1, node2, new_distance: float):
         if isinstance(node1, int) and isinstance(node2, int) and \
                 (isinstance(new_distance, float) or isinstance(new_distance, int)):
             self._map[node1][node2]['weight'] = new_distance
@@ -87,7 +83,7 @@ class Navigation:
             sort_attraction[idx] = attr['name']
         all_attractions = sorted(sort_attraction.items(), key = lambda x: x[1])
         for attraction in all_attractions:
-            print('{:<50} {:>3}'.format(attraction[1], attraction[0]))
+            print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
 
     def get_nodes_attributes(self, node):
         for attributes in self._map.nodes[node]:
@@ -191,7 +187,7 @@ class Navigation:
                 attr_num = food
         return (attr_num, self.get_node_name(attr_num))
 
-    def draw_map(self, fullmap = True):
+    def draw_map(self):
         fig = plt.figure()
         plt.title('Xcaret Tourist Map')
         color_map = []
@@ -203,22 +199,25 @@ class Navigation:
             else:
                 color_map.append('green')
 
-        weights = [(math.log(self._map[u][v]['weight']))/10 for u,v in self._map.edges()]
+        weights = [(math.log(self._map[u][v]['weight']))/5 for u,v in self._map.edges()]
         nx.draw(self._map,pos=nx.get_node_attributes(self._map, 'pos'),node_size = 550, node_color = color_map,with_labels=True, \
                 width = weights, arrowsize = 6.5)
+
+        # edge_labels = nx.get_edge_attributes(self._map,'type')
+        # nx.draw_networkx_edge_labels(self._map,pos=nx.get_node_attributes(self._map, 'pos'),edge_labels=edge_labels, font_size=5)
+        # plt.plot(self._map,'EdgeLabel',self._map.edges['type'])
+
         fig.set_facecolor('#b6f442')
         plt.title('Xcaret Tourist Map')
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         return plt.show()
 
+    def draw_route(self,node1, node2):
+        gg = self.draw_map()
 
-# if __name__ == "__main__":
-
-
-
-## tests:
-gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
-print(gs.draw_map())
+if __name__ == "__main__":
+    gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
+    print(gs.draw_map())
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
 #gs.set_edge_weight(19,28, 40)
