@@ -1,8 +1,9 @@
 from Navigation import *
+from pathlib import Path
 
 # file path validation
 while True:
-    prompt = input("Do you want to see an example of Map class or create one on your own? \n1. Example  \n2. Create a new one \n3. Quit\n")
+    prompt = input("Do you want to see an example of a map navigation or create one on your own? \n1. Example  \n2. Create a new one \n3. Quit\n")
     if prompt == "1":
         site_name = "Xcaret Amusement Park"
         node_file, edge_file = "data/node_list.csv", "data/edge_list.csv"
@@ -10,13 +11,23 @@ while True:
     elif prompt == "2":
         site_name = input("What's the name of the place your map is designed for? ")
         while True:
+            node_file_name = input("Please indicate the file path of node list: ")
+            node_file = Path(node_file_name)
             try:
-                node_file = input("Please indicate the file path of node list: ")
-                edge_file = input("Please indicate the file path of edge list: ")
-            except:
-                #  FileNotFoundError
-                print("File path doesn't exit. Please type in a valid one.")
-                continue
+                node_file.resolve(strict = True)
+            except FileNotFoundError:
+                print("File path doesn't exit. Please try again.\n")
+            else:
+                break
+        while True:
+            edge_file_name = input("Please indicate the file path of edge list: ")
+            edge_file = Path(edge_file_name)
+            try:
+                edge_file.resolve(strict = True)
+            except FileNotFoundError:
+                print("File path doesn't exit. Please try again.\n")
+            else:
+                break
     elif prompt == "3":
         exit()
     else:
@@ -24,8 +35,6 @@ while True:
 
 
 def user_interface():
-    #map = Navigation("data/node_list.csv","data/edge_list.csv", False)
-    #map = Map(node_file, edge_file, False)
     map = Map(node_file, edge_file, False)
 
     print("""=========================== Welcome to %s ============================
