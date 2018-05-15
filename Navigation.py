@@ -7,16 +7,16 @@ import math
 
 
 class Map:
-    def __init__(self, node_file, edge_file):
+    def __init__(self, node_file, edge_file, disable):
         """
         Given files with node data and edge data, construct a directed graph
 
         :param node_file: csv file with nodes and their attributes
         :param edge_file: csv file with edges and their attributes
         """
-        self._map = self._build_map(nx.DiGraph(), node_file, edge_file)
+        self._map = self._build_map(nx.DiGraph(), node_file, edge_file, disable)
 
-    def _build_map(self, graph, node_file, edge_file):
+    def _build_map(self, graph, node_file, edge_file, disable: bool):
         """
         Helper function to construct a map with nodes and edges added
 
@@ -38,7 +38,10 @@ class Map:
         edge_attrs = {}
         edge_list = pd.read_csv(edge_file)
         for idx, edge_attr in edge_list.iterrows():
-            graph.add_edge(edge_attr[0],edge_attr[1])
+            if disable is False:
+                graph.add_edge(edge_attr[0],edge_attr[1])
+            if disable is True and edge_attr[4] == 1:
+                graph.add_edge(edge_attr[0],edge_attr[1])
             attr = {}
             for index in range(2, len(list(edge_list.columns))):
                 attr[list(edge_list.columns)[index]] = edge_attr[index]
@@ -98,9 +101,13 @@ class Map:
             print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
 
     def get_nodes_attributes(self, node: int):
-        # show all node attributes except x_cord and y_coord
+        """
+        Display useful information of a location including whether there is a bathroom, whether the place sells food,
+        the type and fare of the location, average waiting time, opening time and closing time.
+        :param node: location number
+        :return: print useful information of the location
+        """
         if node in self._map.nodes:
-            food, bathroom = '', ''
             if bool(int(self._map.nodes[node]['has_bathroom'])):
                 bathroom = "has a bathroom."
             else:
@@ -305,7 +312,7 @@ class Map:
         gg = self.draw_map()
 
 if __name__ == "__main__":
-    gs = Map("data/node_list.csv","data/edge_list.csv")
+    gs = Map("data/node_list_new.csv","data/edge_list_new.csv", True)
     #print(gs.draw_map('Xcaret Tourist Map'))
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
@@ -314,7 +321,7 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    print(gs.get_nodes_attributes(10))
+    print(gs.go_through_all_nodes())
     #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
