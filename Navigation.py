@@ -54,7 +54,7 @@ class Map:
             raise KeyError('Unexpected location number!')
 
     def set_edge_weight(self, node1, node2, new_distance):
-        if (node1 and node2) in self._map.nodes & (isinstance(new_distance, float) or isinstance(new_distance, int)):
+        if (node1, node2) in self._map.edges & (isinstance(new_distance, float) or isinstance(new_distance, int)):
             self._map[node1][node2]['distance'] = new_distance
         else:
             raise ValueError("Unexpected input!")
@@ -83,9 +83,13 @@ class Map:
                          'NE': 'northeast', 'NW': 'northwest', 'SW': 'southwest', 'SE': 'southwest'}
             return direction[self._map[node1][node2]['direction']]
         else:
-            raise ValueError("Unexpected location number!")
+            raise ValueError("Unexpected edges!")
 
     def print_all_attractions(self):
+        """
+        Display all attractions alphabetically
+        :return: print formatted locations
+        """
         sort_attraction = {}
         for (idx, attr) in self._map.nodes.items():
             sort_attraction[idx] = attr['name']
@@ -127,34 +131,57 @@ class Map:
         return attractions
 
     @staticmethod
-    def format_time(hourstring: str):
-        if len(hourstring) == 3:
-            format_time = hourstring[:-2].ljust(3, '0') + hourstring[-2:]
+    def format_time(timestring: str):
+        # "9AM"
+        if len(timestring) == 3:
+            format_time = timestring[:-2].ljust(3, '0') + timestring[-2:]
             format_time.zfill(6)
-        elif len(hourstring) == 4:
-            format_time = hourstring[:-2].ljust(4, '0')+ hourstring[-2:]
-        elif len(hourstring) == 5:
-            format_time = hourstring.zfill(6)
+        # "12PM"
+        elif len(timestring) == 4:
+            format_time = timestring[:-2].ljust(4, '0')+ timestring[-2:]
+        # elif len(timestring) == 5:
+        #     format_time = timestring.zfill(6)
         else:
-            format_time = hourstring
+            format_time = timestring
         time_format = "%I%M%p"
         return datetime.strptime(format_time, time_format)
 
-    def attractions_open(self, current_time):
+    def attractions_open(self, time: str):
         """
-        Display all attractions that are open at current time
+        Display all attractions that are open at a specific time
 
-        :param current_time: current time
+        :param time: current time
         :return: all attractions that are still open
         """
-        open_attraction = []
-        for attraction in self._map.nodes:
-            if self.format_time(current_time) >= self.format_time(self._map.nodes[attraction]['open_time']):
-                open_attraction.append((attraction, self.get_node_name(attraction)))
-        if len(open_attraction) == 0:
-            return "Sorry, no attraction is open."
+        if isinstance(time, str) and time[-2:] in ("AM", "PM", "am", "pm") and time[:-2].isdigit():
+            if len(time) == 4 and int(time[:2]) > 12:
+                return "Sorry the time format is invalid."
+            elif len(time) == 6 and (int(time[:2]) > 12 or int(time[2:4] > 60)):
+                return "Sorry the range of minute is [0,60] and the range of hour is [0,12]"
+            else:
+                open_attraction = []
+                for attraction in self._map.nodes:
+                    if self.format_time(time) >= self.format_time(self._map.nodes[attraction]['open_time']):
+                        open_attraction.append((attraction, self.get_node_name(attraction)))
+                if len(open_attraction) == 0:
+                    return "Sorry, no attraction is open."
+                else:
+                    return self.format_open_attractions(open_attraction)
         else:
-            return open_attraction
+            raise ValueError("Invalid time format!")
+
+    def format_open_attractions(self, open_attraction: list):
+        """
+        Helper function to return formatted open attractions
+
+        :param open_attraction: attractions that are open
+        :return: print formatted attractions
+        """
+        print("These locations are open based on the time you indicate: ")
+        print("{:<10} {}".format("No.", "Name"))
+        sort_attraction = sorted(open_attraction, key=lambda x:x[0])
+        for loc in sort_attraction:
+            print("{:<10} {}".format(loc[0], loc[1]))
 
     def go_through_all_nodes(self) ->bool:
         """
@@ -275,7 +302,7 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    print(gs.find_nearest_bathroom(18))
+    print(gs.attractions_open("6620PM"))
     #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
