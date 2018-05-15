@@ -13,7 +13,6 @@ class Map:
 
         :param node_file: csv file with nodes and their attributes
         :param edge_file: csv file with edges and their attributes
-        :param disable: whether instantiates an ADA route or not
         """
         self._map = self._build_map(nx.DiGraph(), node_file, edge_file)
 
@@ -26,26 +25,31 @@ class Map:
         node_attrs = {}
         node_list = pd.read_csv(node_file)
         for idx, node_attr in node_list.iterrows():
+            # add nodes to graph
+            graph.add_node(node_attr[0])
             attr = {}
             for index in range(1,len(list(node_list.columns))):
                 attr[list(node_list.columns)[index]] = node_attr[index]
             node_attrs[node_attr[0]] = attr
+        # add node attributes
         nx.set_node_attributes(graph, node_attrs)
 
         # add edges, load edge attributes
         edge_attrs = {}
         edge_list = pd.read_csv(edge_file)
         for idx, edge_attr in edge_list.iterrows():
+            graph.add_edge(edge_attr[0],edge_attr[1])
             attr = {}
             for index in range(2, len(list(edge_list.columns))):
                 attr[list(edge_list.columns)[index]] = edge_attr[index]
             edge_attrs[(edge_attr[0], edge_attr[1])] = attr
+        # add edge attributes
         nx.set_edge_attributes(graph, edge_attrs)
         return graph
 
     def get_edge_weight(self, node1, node2):
         if isinstance(node1, int) and isinstance(node2, int):
-            return self._map[node1][node2]['weight']
+            return self._map[node1][node2]['distance']
 
     def set_edge_weight(self, node1, node2, new_distance: float):
         if isinstance(node1, int) and isinstance(node2, int) and \
@@ -73,7 +77,8 @@ class Map:
         for attraction in all_attractions:
             print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
 
-    def get_nodes_attributes(self, node):
+    def get_nodes_attributes(self, node: int):
+        # show all attributes except x_cord and y_coord
         for attributes in self._map.nodes[node]:
             if attributes not in ('x_coord', 'y_coord'):
                 print(attributes, ": ", self._map.nodes[node][attributes])
@@ -95,6 +100,7 @@ class Map:
         print ("All disabled friendly attractions are: ")
         return attractions
 
+
     def format_time(self, hourstring:str):
         if len(hourstring) == 3:
             format_time = hourstring[:-2].ljust(3,'0') + hourstring[-2:]
@@ -107,6 +113,7 @@ class Map:
             format_time = hourstring
         time_format = "%I%M%p"
         return datetime.strptime(format_time, time_format)
+
 
     def attractions_open(self, current_time):
         """
@@ -122,6 +129,7 @@ class Map:
             return "Sorry, no attraction is open."
         else:
             return open_attraction
+
 
     def go_through_all_nodes(self) ->bool:
         """
@@ -204,7 +212,7 @@ class Map:
         gg = self.draw_map()
 
 if __name__ == "__main__":
-    gs = Map("data/node_list.csv","data/edge_list.csv", False)
+    gs = Map("data/node_list.csv","data/edge_list.csv")
     #print(gs.draw_map('Xcaret Tourist Map'))
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
@@ -213,7 +221,8 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-#print(gs.get_edge_weight(9,20))
+    gs.get_nodes_attributes(9)
+    #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
 #print(gs.get_node_name(9))
@@ -229,5 +238,4 @@ if __name__ == "__main__":
 # gs.visualization()
 # gs2.visualization()
 
-## User interface below:
 
