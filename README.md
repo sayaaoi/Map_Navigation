@@ -13,4 +13,6 @@ to starting at the last end point.
 
 ## Reference
 [Legend of NetworkX graph](https://stackoverflow.com/questions/32931484/legend-for-networkx-draw-function?lq=1&utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)<br>
-[Check whether a file exists](https://stackoverflow.com/questions/82831/how-to-check-whether-a-file-exists)
+[Check whether a file exists](https://docs.python.org/3/library/pathlib.html)<br>
+[Set node attributes](https://networkx.github.io/documentation/stable/reference/generated/networkx.classes.function.set_node_attributes.html)<br>
+[Encoding issue when reading files](https://stackoverflow.com/a/49150749)
