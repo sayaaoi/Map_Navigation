@@ -88,28 +88,39 @@ class Map:
             print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
 
     def get_nodes_attributes(self, node: int):
-        # show all attributes except x_cord and y_coord
-        for attributes in self._map.nodes[node]:
-            if attributes not in ('x_coord', 'y_coord'):
-                print(attributes, ": ", self._map.nodes[node][attributes])
+        # show all node attributes except x_cord and y_coord
+        if node in self._map.nodes:
+            for attributes in self._map.nodes[node]:
+                if attributes not in ('x_coord', 'y_coord'):
+                    print(attributes, ": ", self._map.nodes[node][attributes])
+        else:
+            raise ValueError("Unexpected location number!")
 
-    def disabled_friendly_node(self, node) ->bool:
+    def disabled_friendly_node(self, node: int) ->bool:
         """
-        check if a certain node/attraction is available for disabled people
-        :param node:
+        Check if a certain node/attraction is available for disabled people
+        :param node: location number
         :return:
         """
-        return self._map.nodes.data()[node]['disabled_accessibility'] == 1
+        if node in self._map.nodes:
+            return self._map.nodes[node]['disabled_accessibility'] == 1
+        else:
+            raise ValueError("Unexpected location number!")
 
     def all_disabled_friendly_node(self):
+        """
+        Display all disabled people friendly attractions
+        :return:
+        """
         attractions = ""
-        for attraction in self._map.nodes():
+        for attraction in self._map.nodes:
             if self.disabled_friendly_node(attraction):
                 attractions += str(attraction) + ": "
                 attractions += self.get_node_name(attraction) + "\n"
         print("All disabled friendly attractions are: ")
         return attractions
 
+    @staticmethod
     def format_time(self, hourstring:str):
         if len(hourstring) == 3:
             format_time = hourstring[:-2].ljust(3, '0') + hourstring[-2:]
@@ -228,7 +239,7 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    gs.print_all_attractions()
+    print(gs.all_disabled_friendly_node())
     #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
