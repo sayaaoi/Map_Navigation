@@ -30,6 +30,7 @@ class Map:
             attr = {}
             for index in range(1,len(list(node_list.columns))):
                 attr[list(node_list.columns)[index]] = node_attr[index]
+            attr['pos'] = (attr['x_coord'], attr['y_coord'])
             node_attrs[node_attr[0]] = attr
         # add node attributes
         nx.set_node_attributes(graph, node_attrs)
@@ -295,24 +296,45 @@ class Map:
             else:
                 color_map.append('green')
 
-        weights = [(math.log(self._map[u][v]['weight']))/5 for u,v in self._map.edges()]
-        nx.draw(self._map, pos=nx.get_node_attributes(self._map, 'pos'),node_size = 550, node_color = color_map,with_labels=True,
+        weights = [(math.log(self._map[u][v]['distance']))/5 for u,v in self._map.edges()]
+        nx.draw(self._map, pos=nx.get_node_attributes(self._map, 'pos'),node_size=550, node_color=color_map, with_labels=True,
                 width = weights, arrowsize = 6.5)
 
         # edge_labels = nx.get_edge_attributes(self._map,'type')
         # nx.draw_networkx_edge_labels(self._map,pos=nx.get_node_attributes(self._map, 'pos'),edge_labels=edge_labels, font_size=5)
         # plt.plot(self._map,'EdgeLabel',self._map.edges['type'])
 
-        fig.set_facecolor('#b6f442')
+        #fig.set_facecolor('#b6f442')
         plt.legend()
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         return plt.show()
 
-    def draw_route(self, node1, node2):
-        gg = self.draw_map()
+    def draw_route(self, src: int, dest: int):
+        temp = self.shortest_path(src, dest, weight='distance')
+        # The positions of each node are stored in a dictionary
+        node_pos = nx.get_node_attributes(self._map, 'pos')
+        # The edge weights of each arcs are stored in a dictionary
+        edge_type = nx.get_edge_attributes(self._map, 'type')
+        # extract node number
+        path = [loc[0] for loc in temp]
+
+        # create a list of edges in the shortest path using the zip command and store it in red edges
+        red_edges = list(zip(path, path[1:]))
+        # if the node is in the shortest path, set it to red, else set it to white color
+        node_col = ['white' if not node in path else 'red' for node in self._map.nodes]
+        edge_col = ['black' if not edge in red_edges else 'red' for edge in self._map.edges]
+        # draw the nodes
+        nx.draw_networkx(self._map, node_pos, node_color=node_col, node_size=450)
+        # draw the edges
+        nx.draw_networkx_edges(self._map, node_pos, edge_color=edge_col)
+        # Draw the edge labels
+        # nx.draw_networkx_edge_labels(self._map, node_pos, edge_color=edge_col, edge_labels=edge_type)
+        plt.axis("off")
+        return plt.show()
+
 
 if __name__ == "__main__":
-    gs = Map("data/node_list_new.csv","data/edge_list_new.csv", True)
+    gs = Map("data/node_list_new.csv","data/edge_list_new.csv", False)
     #print(gs.draw_map('Xcaret Tourist Map'))
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
@@ -321,8 +343,8 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    print(gs.go_through_all_nodes())
-    #print(gs.get_edge_weight(9,20))
+    #print(gs.go_through_all_nodes())
+    gs.draw_route(18,42)
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
 #print(gs.get_node_name(9))
