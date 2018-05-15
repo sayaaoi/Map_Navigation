@@ -9,7 +9,7 @@ import math
 class Map:
     def __init__(self, node_file, edge_file):
         """
-        Constructor of a map. It instantiates a graph with nodes and edges
+        Given files with node data and edge data, construct a directed graph
 
         :param node_file: csv file with nodes and their attributes
         :param edge_file: csv file with edges and their attributes
@@ -18,7 +18,7 @@ class Map:
 
     def _build_map(self, graph, node_file, edge_file):
         """
-        Helper function to construct an instance of a map
+        Helper function to construct a map with nodes and edges added
 
         """
         # add nodes, load node attributes
@@ -72,7 +72,13 @@ class Map:
             raise ValueError("Invalid input! New name must be string, location should exist.")
 
     def get_direction(self, node1, node2) -> str:
-        if (node1 and node2) in self._map.nodes:
+        """
+        Get direction of an edge
+        :param node1: source node
+        :param node2: destination node
+        :return: direction from node1 to node2
+        """
+        if (node1, node2) in self._map.edges:
             direction = {'N': 'north', 'S': 'south', 'W': 'west', 'E': 'east',
                          'NE': 'northeast', 'NW': 'northwest', 'SW': 'southwest', 'SE': 'southwest'}
             return direction[self._map[node1][node2]['direction']]
