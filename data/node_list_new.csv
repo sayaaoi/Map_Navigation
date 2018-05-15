@@ -1,0 +1,26 @@
+map_id,name,disabled_accessibility,open_time,close_time,avg_wait_time,has_bathroom,has_food,fee,type,has_entrance,has_exit,x_coord,y_coord
+9,Mayan Village,1,9am,7pm,5,0,1,0,culture,1,1,395,390
+12,Underground Rivers Entrance,0,12pm,6pm,0,1,0,0,entertainment,1,0,210,310
+20,Archaeological Zones,1,9am,7pm,10,1,0,0,education,1,1,320,460
+7,Jaguar Island,1,9am,6pm,10,1,0,0,animal,1,1,455,570
+6,Coral reef aquarium,1,10am,8pm,5,0,1,0,animal,1,1,260,520
+10,Voladores ritual ceremory of the Voladores ,1,9am,6pm,15,0,1,0,culture,1,1,190,410
+5,Sea turtles,1,9am,5pm,5,0,0,0,animal,1,1,320,650
+4,Beaches and natural pools,0,9am,6pm,0,1,0,0,entertainment,1,1,220,850
+3,Snuba family,1,9am,6pm,0,1,1,20,entertainment,1,1,370,780
+36,Underground Rivers Exit,0,12pm,6pm,0,0,0,0,entertainment,1,1,750,650
+8,Butterfuly Pavilion,1,9am,6pm,0,0,0,0,animal,1,1,560,400
+35,Stain-glass Plaza,1,9am,9pm,0,1,1,0,rest,1,1,630,550
+37,Xpa,0,9am,7pm,10,1,1,35,entertainment,1,1,580,780
+1,Reef Snuba,0,9am,6pm,0,1,1,40,entertainment,1,1,580,940
+28,Main Plaza,1,9am,9pm,0,0,1,0,rest,1,1,350,220
+19,Tropical Jungle Trail Entrance,0,9am,6pm,0,0,0,0,entertainment,1,0,160,220
+39,Tropical Jungle Trail Exit,0,9am,6pm,0,0,0,20,entertainment,1,1,60,380
+18,Natural Museum of Orchids & Bromeliads,1,9am,6pm,6,0,0,0,education,1,1,80,150
+42,Chapel of Guadalupe,1,9am,9pm,15,0,0,0,culture,1,1,250,140
+34,Puente al Paraiso,1,9am,8pm,0,1,0,0,culture,1,1,395,290
+14,Teatro Gran Tlachco,1,3pm,9pm,0,1,1,varied,culture,1,1,60,-10
+15,Regional Wildlife Breeding Farm,1,11am,4pm,5,0,0,12,animal,1,1,395,100
+38,House of Whispers,1,11am,3pm,0,1,0,15,culture,1,1,480,200
+21,Snorkeling Inlet,1,7am,4pm,0,1,0,30,entertainment,1,1,310,950
+17,Edible Mushroom Farm,1,11am,5pm,10,0,1,10,entertainment,1,1,10,200
