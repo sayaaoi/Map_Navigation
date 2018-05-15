@@ -121,7 +121,7 @@ class Map:
         return attractions
 
     @staticmethod
-    def format_time(self, hourstring:str):
+    def format_time(hourstring: str):
         if len(hourstring) == 3:
             format_time = hourstring[:-2].ljust(3, '0') + hourstring[-2:]
             format_time.zfill(6)
@@ -136,12 +136,13 @@ class Map:
 
     def attractions_open(self, current_time):
         """
-        return all attractions that are open at current time
+        Display all attractions that are open at current time
+
         :param current_time: current time
         :return: all attractions that are still open
         """
         open_attraction = []
-        for attraction in self._map.nodes():
+        for attraction in self._map.nodes:
             if self.format_time(current_time) >= self.format_time(self._map.nodes[attraction]['open_time']):
                 open_attraction.append((attraction, self.get_node_name(attraction)))
         if len(open_attraction) == 0:
@@ -151,30 +152,42 @@ class Map:
 
     def go_through_all_nodes(self) ->bool:
         """
-        check if from every node can arrive at any other node in the map
-        :param edge_list:
-        :return:
+        Check if from every node can arrive at any other node in the map
+
         """
         for node1 in self._map.nodes():
             for node2 in self._map.nodes():
                 if not nx.has_path(self._map, node1, node2):
-                    print(node1, node2)
                     return False
         return True
 
-    def shortest_path(self, start, end, weight = 'weight'):
-        path_list = nx.dijkstra_path(self._map, start, end, weight)
-        return [(idx,self._map.nodes.data()[idx]['name']) for idx in path_list]
+    def shortest_path(self, start, end, weight='distance') ->list:
+        """
+        Returns the shortest weighted path from source to target in graph.
+        Helper function for print_shortest_route
 
-    def print_shortest_route(self, start, end):
+        :param start: start location number
+        :param end: destination location number
+        :param weight: distance between two locations
+        :return: shortest path with location number and location name
+        """
+        if (start and end) in self._map.nodes:
+            path_list = nx.dijkstra_path(self._map, start, end, weight)
+            return [(idx,self._map.nodes[idx]['name']) for idx in path_list]
+        else:
+            raise ValueError("Unexpected location number!")
+
+    def print_shortest_route(self, start: int, end: int):
         paths = self.shortest_path(start, end)
         for i, path in enumerate(paths):
             if i == 0:
-                print("From {0}: {1}".format(path[0],path[1]))
-            elif i == len(paths) - 1:
-                print("Finally, you will arrive at your destination, {0}: {1}".format(path[0],path[1]))
+                print("From {1}({0})".format(path[0], path[1]))
             else:
-                print("Then, take the way to {0}: {1}".format(path[0],path[1]))
+                direction = self.get_direction(paths[i - 1][0], path[0])
+                if i == len(paths) - 1:
+                    print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0],path[1]))
+                else:
+                    print("Then, go {0} to {2}({1})".format(direction, path[0],path[1]))
 
     def find_nearest_bathroom(self, cur_location: int):
         """
@@ -239,7 +252,7 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    print(gs.all_disabled_friendly_node())
+    print(gs.shortest_path(20,18))
     #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
