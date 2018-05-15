@@ -5,54 +5,42 @@ import sys
 from datetime import datetime
 import math
 
-class Navigation:
-    def __init__(self, node_file, edge_file, disable: bool):
-        """
-        Constructor of Navigation. It instantiates a graph with nodes and edges
 
-        :param node_file: node id and its attributes
-        :param edge_file: nodes connect edges and edge attributes
+class Map:
+    def __init__(self, node_file, edge_file):
+        """
+        Constructor of a map. It instantiates a graph with nodes and edges
+
+        :param node_file: csv file with nodes and their attributes
+        :param edge_file: csv file with edges and their attributes
         :param disable: whether instantiates an ADA route or not
         """
-        self._map = self.build_map(nx.DiGraph(), node_file, edge_file, disable)
+        self._map = self._build_map(nx.DiGraph(), node_file, edge_file)
 
-    def build_map(self, graph, node_file, edge_file, disable: bool):
+    def _build_map(self, graph, node_file, edge_file):
         """
-        Helper function to construct instances
+        Helper function to construct an instance of a map
 
         """
+        # add nodes, load node attributes
+        node_attrs = {}
         node_list = pd.read_csv(node_file)
-        edge_list = pd.read_csv(edge_file)
         for idx, node_attr in node_list.iterrows():
-            attr = {'name': node_attr[1],
-                    'disabled_accessibility':node_attr[2],
-                    'open time': node_attr[3],
-                    'close time': node_attr[4],
-                    'average waiting time': node_attr[5],
-                    'has_bathroom':node_attr[6],
-                    'has_food':node_attr[7],
-                    'fee':node_attr[8],
-                    'type':node_attr[9],
-                    'x_coord':node_attr[12],
-                    'y_coord':node_attr[13]
-                    }
-            graph.add_node(node_attr[0], name = attr['name'], disabled_accessibility = attr['disabled_accessibility'],
-                           open_time = attr['open time'], close_time = attr['close time'], avg_wait_time = attr['average waiting time'],
-                           has_bathroom = attr['has_bathroom'], has_food = attr['has_food'], fee = attr['fee'], type = attr['type'],
-                           x_coord = attr['x_coord'], y_coord = attr['y_coord'],pos = (attr['x_coord'],1000 - attr['y_coord']))
+            attr = {}
+            for index in range(1,len(list(node_list.columns))):
+                attr[list(node_list.columns)[index]] = node_attr[index]
+            node_attrs[node_attr[0]] = attr
+        nx.set_node_attributes(graph, node_attrs)
+
+        # add edges, load edge attributes
+        edge_attrs = {}
+        edge_list = pd.read_csv(edge_file)
         for idx, edge_attr in edge_list.iterrows():
-            attr = {'weight': edge_attr[2],
-                    'type': edge_attr[3],
-                    'disable_accessbility': edge_attr[4],
-                    'direction': edge_attr[5]}
-            if disable and edge_attr[4] == 1:
-                graph.add_edge(edge_attr[0], edge_attr[1], weight = attr['weight'], type = attr['type'],
-                               disable_accessbility = attr['disable_accessbility'],
-                                direction = attr['direction'])
-            if not disable:
-                graph.add_edge(edge_attr[0], edge_attr[1], weight = attr['weight'], type = attr['type'],
-                                disable_accessbility = attr['disable_accessbility'],
-                                direction = attr['direction'])
+            attr = {}
+            for index in range(2, len(list(edge_list.columns))):
+                attr[list(edge_list.columns)[index]] = edge_attr[index]
+            edge_attrs[(edge_attr[0], edge_attr[1])] = attr
+        nx.set_edge_attributes(graph, edge_attrs)
         return graph
 
     def get_edge_weight(self, node1, node2):
@@ -69,7 +57,7 @@ class Navigation:
             return self._map.nodes.data()[node]['name']
 
     def set_node_name(self, node, new_name: str):
-        if isinstance(new_name,str):
+        if isinstance(new_name, str):
             self._map.nodes.data()[node]['name'] = new_name
 
     def get_direction(self, node1, node2) -> str:
@@ -120,7 +108,7 @@ class Navigation:
         time_format = "%I%M%p"
         return datetime.strptime(format_time, time_format)
 
-    def attractions_open(self, current_time) ->bool:
+    def attractions_open(self, current_time):
         """
         return all attractions that are open at current time
         :param current_time: current time
@@ -162,9 +150,9 @@ class Navigation:
             else:
                 print("Then, take the way to {0}: {1}".format(path[0],path[1]))
 
-    def find_nearest_bathroom(self, cur_location: int) -> tuple:
+    def find_nearest_bathroom(self, cur_location: int):
         """
-        >>> gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
+        >>> gs = Map("data/node_list.csv","data/edge_list.csv", False)
         >>> print(gs.find_nearest_bathroom(9))
         (20, 'Archaeological Zones')
         """
@@ -187,9 +175,9 @@ class Navigation:
                 attr_num = food
         return (attr_num, self.get_node_name(attr_num))
 
-    def draw_map(self):
+    def draw_map(self, graph_name: str):
         fig = plt.figure()
-        plt.title('Xcaret Tourist Map')
+        plt.title(graph_name)
         color_map = []
         for node in self._map:
             if self._map.nodes[node]['type'] == 'entertainment':
@@ -200,7 +188,7 @@ class Navigation:
                 color_map.append('green')
 
         weights = [(math.log(self._map[u][v]['weight']))/5 for u,v in self._map.edges()]
-        nx.draw(self._map,pos=nx.get_node_attributes(self._map, 'pos'),node_size = 550, node_color = color_map,with_labels=True, \
+        nx.draw(self._map, pos=nx.get_node_attributes(self._map, 'pos'),node_size = 550, node_color = color_map,with_labels=True,
                 width = weights, arrowsize = 6.5)
 
         # edge_labels = nx.get_edge_attributes(self._map,'type')
@@ -208,16 +196,16 @@ class Navigation:
         # plt.plot(self._map,'EdgeLabel',self._map.edges['type'])
 
         fig.set_facecolor('#b6f442')
-        plt.title('Xcaret Tourist Map')
+        plt.legend()
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         return plt.show()
 
-    def draw_route(self,node1, node2):
+    def draw_route(self, node1, node2):
         gg = self.draw_map()
 
 if __name__ == "__main__":
-    gs = Navigation("data/node_list2.csv","data/edge_list3.csv", False)
-    print(gs.draw_map())
+    gs = Map("data/node_list.csv","data/edge_list.csv", False)
+    #print(gs.draw_map('Xcaret Tourist Map'))
 # print(gs.shortest_path(10,28))
 #print(gs.get_edge_weight(19,28))
 #gs.set_edge_weight(19,28, 40)
