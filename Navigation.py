@@ -28,7 +28,7 @@ class Map:
             # add nodes to graph
             graph.add_node(node_attr[0])
             attr = {}
-            for index in range(1,len(list(node_list.columns))):
+            for index in range(1, len(list(node_list.columns))):
                 attr[list(node_list.columns)[index]] = node_attr[index]
             attr['pos'] = (attr['x_coord'], attr['y_coord'])
             node_attrs[node_attr[0]] = attr
@@ -118,7 +118,7 @@ class Map:
             else:
                 food = "doesn't sell food."
             print(self._map.nodes[node]['name'] + "is a place of", self._map.nodes[node]['type'] + ".",'\n' + "It opens at",
-                  self._map.nodes[node]['open_time'], "and closes at", self._map.nodes[node]['close_time'] + ".", '\n'+
+                  self._map.nodes[node]['open_time'], "and closes at", self._map.nodes[node]['close_time'] + ".", '\n' +
                   "The average waiting time is", self._map.nodes[node]['avg_wait_time'], "minutes.",
                   "The fare of this place is " + self._map.nodes[node]['fee'] + " dollar", '\n' +
                   "This place", bathroom, "\n" + "This place", food)
@@ -157,7 +157,7 @@ class Map:
             format_time.zfill(6)
         # "12PM"
         elif len(timestring) == 4:
-            format_time = timestring[:-2].ljust(4, '0')+ timestring[-2:]
+            format_time = timestring[:-2].ljust(4, '0') + timestring[-2:]
         # elif len(timestring) == 5:
         #     format_time = timestring.zfill(6)
         else:
@@ -226,7 +226,7 @@ class Map:
         """
         if (start and end) in self._map.nodes:
             path_list = nx.dijkstra_path(self._map, start, end, weight)
-            return [(idx,self._map.nodes[idx]['name']) for idx in path_list]
+            return [(idx, self._map.nodes[idx]['name']) for idx in path_list]
         else:
             raise ValueError("Unexpected location number!")
 
@@ -238,7 +238,7 @@ class Map:
             else:
                 direction = self.get_direction(paths[i - 1][0], path[0])
                 if i == len(paths) - 1:
-                    print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0],path[1]))
+                    print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0], path[1]))
                 else:
                     print("Then, go {0} to {2}({1})".format(direction, path[0],path[1]))
 
@@ -296,7 +296,7 @@ class Map:
             else:
                 color_map.append('green')
 
-        weights = [(math.log(self._map[u][v]['distance']))/5 for u,v in self._map.edges()]
+        weights = [(math.log(self._map[u][v]['distance']))/5 for u,v in self._map.edges]
         nx.draw(self._map, pos=nx.get_node_attributes(self._map, 'pos'),node_size=550, node_color=color_map, with_labels=True,
                 width = weights, arrowsize = 6.5)
 
@@ -310,6 +310,14 @@ class Map:
         return plt.show()
 
     def draw_route(self, src: int, dest: int):
+        """
+        Visualize shortest path between nodes.
+
+        :param src: starting node number
+        :param dest: ending node number
+        :return: map with highlighted shortest path
+        """
+        plt.figure(figsize=(15, 10))
         temp = self.shortest_path(src, dest, weight='distance')
         # The positions of each node are stored in a dictionary
         node_pos = nx.get_node_attributes(self._map, 'pos')
@@ -321,14 +329,15 @@ class Map:
         # create a list of edges in the shortest path using the zip command and store it in red edges
         red_edges = list(zip(path, path[1:]))
         # if the node is in the shortest path, set it to red, else set it to white color
-        node_col = ['white' if not node in path else 'red' for node in self._map.nodes]
-        edge_col = ['black' if not edge in red_edges else 'red' for edge in self._map.edges]
+        node_col = ['white' if node not in path else 'red' for node in self._map.nodes]
+        edge_col = ['black' if edge not in red_edges else 'red' for edge in self._map.edges]
+        edge_width = [1 if edge not in red_edges else 4 for edge in self._map.edges]
         # draw the nodes
-        nx.draw_networkx(self._map, node_pos, node_color=node_col, node_size=450)
+        nx.draw_networkx(self._map, node_pos, node_color=node_col, node_size=550, edge_col="k", font_size=13)
         # draw the edges
-        nx.draw_networkx_edges(self._map, node_pos, edge_color=edge_col)
+        nx.draw_networkx_edges(self._map, node_pos, edge_color=edge_col, width=edge_width)
         # Draw the edge labels
-        # nx.draw_networkx_edge_labels(self._map, node_pos, edge_color=edge_col, edge_labels=edge_type)
+        nx.draw_networkx_edge_labels(self._map, node_pos, edge_color=edge_col, edge_labels=edge_type, font_size=8)
         plt.axis("off")
         return plt.show()
 
