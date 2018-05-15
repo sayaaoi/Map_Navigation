@@ -48,32 +48,42 @@ class Map:
         return graph
 
     def get_edge_weight(self, node1, node2):
-        if isinstance(node1, int) and isinstance(node2, int):
+        if (node1 and node2) in self._map.nodes:
             return self._map[node1][node2]['distance']
+        else:
+            raise KeyError('Unexpected location number!')
 
-    def set_edge_weight(self, node1, node2, new_distance: float):
-        if isinstance(node1, int) and isinstance(node2, int) and \
-                (isinstance(new_distance, float) or isinstance(new_distance, int)):
-            self._map[node1][node2]['weight'] = new_distance
+    def set_edge_weight(self, node1, node2, new_distance):
+        if (node1 and node2) in self._map.nodes & (isinstance(new_distance, float) or isinstance(new_distance, int)):
+            self._map[node1][node2]['distance'] = new_distance
+        else:
+            raise ValueError("Unexpected input!")
 
     def get_node_name(self, node: int) ->str:
-        if isinstance(node,int):
-            return self._map.nodes.data()[node]['name']
+        if node in self._map.nodes:
+            return self._map.nodes[node]['name']
+        else:
+            raise ValueError("Unexpected location number!")
 
     def set_node_name(self, node, new_name: str):
-        if isinstance(new_name, str):
-            self._map.nodes.data()[node]['name'] = new_name
+        if node in self._map.nodes and isinstance(new_name, str):
+            self._map.nodes[node]['name'] = new_name
+        else:
+            raise ValueError("Invalid input! New name must be string, location should exist.")
 
     def get_direction(self, node1, node2) -> str:
-        direction = {'N': 'north', 'S': 'south', 'W': 'west', 'E': 'east',
-                  'NE': 'northeast', 'NW': 'northwest', 'SW': 'southwest', 'SE': 'southwest'}
-        return direction[self._map[node1][node2]['direction']]
+        if (node1 and node2) in self._map.nodes:
+            direction = {'N': 'north', 'S': 'south', 'W': 'west', 'E': 'east',
+                         'NE': 'northeast', 'NW': 'northwest', 'SW': 'southwest', 'SE': 'southwest'}
+            return direction[self._map[node1][node2]['direction']]
+        else:
+            raise ValueError("Unexpected location number!")
 
     def print_all_attractions(self):
         sort_attraction = {}
         for (idx, attr) in self._map.nodes.items():
             sort_attraction[idx] = attr['name']
-        all_attractions = sorted(sort_attraction.items(), key = lambda x: x[1])
+        all_attractions = sorted(sort_attraction.items(), key=lambda x: x[1])
         for attraction in all_attractions:
             print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
 
@@ -97,23 +107,21 @@ class Map:
             if self.disabled_friendly_node(attraction):
                 attractions += str(attraction) + ": "
                 attractions += self.get_node_name(attraction) + "\n"
-        print ("All disabled friendly attractions are: ")
+        print("All disabled friendly attractions are: ")
         return attractions
-
 
     def format_time(self, hourstring:str):
         if len(hourstring) == 3:
-            format_time = hourstring[:-2].ljust(3,'0') + hourstring[-2:]
+            format_time = hourstring[:-2].ljust(3, '0') + hourstring[-2:]
             format_time.zfill(6)
         elif len(hourstring) == 4:
-            format_time = hourstring[:-2].ljust(4,'0')+ hourstring[-2:]
+            format_time = hourstring[:-2].ljust(4, '0')+ hourstring[-2:]
         elif len(hourstring) == 5:
             format_time = hourstring.zfill(6)
         else:
             format_time = hourstring
         time_format = "%I%M%p"
         return datetime.strptime(format_time, time_format)
-
 
     def attractions_open(self, current_time):
         """
@@ -129,7 +137,6 @@ class Map:
             return "Sorry, no attraction is open."
         else:
             return open_attraction
-
 
     def go_through_all_nodes(self) ->bool:
         """
@@ -181,7 +188,7 @@ class Map:
             if dist > nx.dijkstra_path_length(self._map, cur_location, food):
                 dist = nx.dijkstra_path_length(self._map, cur_location, food)
                 attr_num = food
-        return (attr_num, self.get_node_name(attr_num))
+        return attr_num, self.get_node_name(attr_num)
 
     def draw_map(self, graph_name: str):
         fig = plt.figure()
@@ -221,7 +228,7 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    gs.get_nodes_attributes(9)
+    gs.print_all_attractions()
     #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
