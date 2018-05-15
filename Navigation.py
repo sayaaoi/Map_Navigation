@@ -100,9 +100,20 @@ class Map:
     def get_nodes_attributes(self, node: int):
         # show all node attributes except x_cord and y_coord
         if node in self._map.nodes:
-            for attributes in self._map.nodes[node]:
-                if attributes not in ('x_coord', 'y_coord'):
-                    print(attributes, ": ", self._map.nodes[node][attributes])
+            food, bathroom = '', ''
+            if bool(int(self._map.nodes[node]['has_bathroom'])):
+                bathroom = "has a bathroom."
+            else:
+                bathroom = "doesn't have a bathroom."
+            if bool(int(self._map.nodes[node]['has_food'])):
+                food = "sells food."
+            else:
+                food = "doesn't sell food."
+            print(self._map.nodes[node]['name'] + "is a place of", self._map.nodes[node]['type'] + ".",'\n' + "It opens at",
+                  self._map.nodes[node]['open_time'], "and closes at", self._map.nodes[node]['close_time'] + ".", '\n'+
+                  "The average waiting time is", self._map.nodes[node]['avg_wait_time'], "minutes.",
+                  "The fare of this place is " + self._map.nodes[node]['fee'] + " dollar", '\n' +
+                  "This place", bathroom, "\n" + "This place", food)
         else:
             raise ValueError("Unexpected location number!")
 
@@ -156,12 +167,13 @@ class Map:
         if isinstance(time, str) and time[-2:] in ("AM", "PM", "am", "pm") and time[:-2].isdigit():
             if len(time) == 4 and int(time[:2]) > 12:
                 return "Sorry the time format is invalid."
-            elif len(time) == 6 and (int(time[:2]) > 12 or int(time[2:4] > 60)):
+            elif len(time) == 6 and (int(time[:2]) > 12 or int(time[2:4]) > 60):
                 return "Sorry the range of minute is [0,60] and the range of hour is [0,12]"
             else:
                 open_attraction = []
                 for attraction in self._map.nodes:
-                    if self.format_time(time) >= self.format_time(self._map.nodes[attraction]['open_time']):
+                    if self.format_time(self._map.nodes[attraction]['close_time']) >= self.format_time(time) >= \
+                            self.format_time(self._map.nodes[attraction]['open_time']):
                         open_attraction.append((attraction, self.get_node_name(attraction)))
                 if len(open_attraction) == 0:
                     return "Sorry, no attraction is open."
@@ -179,7 +191,7 @@ class Map:
         """
         print("These locations are open based on the time you indicate: ")
         print("{:<10} {}".format("No.", "Name"))
-        sort_attraction = sorted(open_attraction, key=lambda x:x[0])
+        sort_attraction = sorted(open_attraction, key=lambda x: x[0])
         for loc in sort_attraction:
             print("{:<10} {}".format(loc[0], loc[1]))
 
@@ -302,7 +314,7 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    print(gs.attractions_open("6620PM"))
+    print(gs.get_nodes_attributes(10))
     #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
