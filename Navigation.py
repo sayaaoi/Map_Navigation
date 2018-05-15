@@ -189,30 +189,47 @@ class Map:
                 else:
                     print("Then, go {0} to {2}({1})".format(direction, path[0],path[1]))
 
-    def find_nearest_bathroom(self, cur_location: int):
+    def find_nearest_bathroom(self, cur_location: int) ->str:
         """
-        >>> gs = Map("data/node_list.csv","data/edge_list.csv", False)
-        >>> print(gs.find_nearest_bathroom(9))
-        (20, 'Archaeological Zones')
-        """
-        if self._map.nodes[cur_location]['has_bathroom'] == 1:
-            return 'Your current location has a bathroom.'
-        dist = sys.maxsize
-        for bathroom in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['has_bathroom'] == 1]:
-            if dist > nx.dijkstra_path_length(self._map,cur_location, bathroom):
-                dist = nx.dijkstra_path_length(self._map,cur_location, bathroom)
-                attr_num = bathroom
-        return (attr_num, self.get_node_name(attr_num))
+        Display the nearest place with a bathroom.
 
-    def find_nearest_foodplace(self, cur_location):
-        if self._map.nodes[cur_location]['has_food'] == 1:
-            print('Your current location has a place for food.')
-        dist = sys.maxsize
-        for food in [idx for idx in self._map.nodes() if self._map.nodes.data()[idx]['has_food'] == 1]:
-            if dist > nx.dijkstra_path_length(self._map, cur_location, food):
-                dist = nx.dijkstra_path_length(self._map, cur_location, food)
-                attr_num = food
-        return attr_num, self.get_node_name(attr_num)
+        :param cur_location: current location number
+        :return: location name and number
+        """
+        if cur_location in self._map.nodes:
+            if self._map.nodes[cur_location]['has_bathroom'] == 1:
+                return 'Your current location has a bathroom.'
+            dist = sys.maxsize
+            attr_num = 0
+            for bathroom in [idx for idx in self._map.nodes() if self._map.nodes[idx]['has_bathroom'] == 1]:
+                if dist > nx.dijkstra_path_length(self._map, cur_location, bathroom, weight="distance"):
+                    dist = nx.dijkstra_path_length(self._map, cur_location, bathroom, weight="distance")
+                    attr_num = bathroom
+            print("The nearest location with bathroom is: ")
+            return self.get_node_name(attr_num) + "(" + str(attr_num) + ")"
+        else:
+            raise ValueError("Unexpected location number!")
+
+    def find_nearest_foodplace(self, cur_location) ->str:
+        """
+        Display the nearest place that sells food.
+
+        :param cur_location: current location number
+        :return: location name and number
+        """
+        if cur_location in self._map.nodes:
+            if self._map.nodes[cur_location]['has_food'] == 1:
+                print('Your current location has a place for food.')
+            dist = sys.maxsize
+            attr_num = 0
+            for food in [idx for idx in self._map.nodes() if self._map.nodes[idx]['has_food'] == 1]:
+                if dist > nx.dijkstra_path_length(self._map, cur_location, food):
+                    dist = nx.dijkstra_path_length(self._map, cur_location, food)
+                    attr_num = food
+            print("The nearest location that sells food is: ")
+            return self.get_node_name(attr_num) + "(" + str(attr_num) + ")"
+        else:
+            raise ValueError("Unexpected location number!")
 
     def draw_map(self, graph_name: str):
         fig = plt.figure()
@@ -252,7 +269,7 @@ if __name__ == "__main__":
 #print(gs.all_disabled_friendly_node())
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
-    print(gs.shortest_path(20,18))
+    print(gs.find_nearest_bathroom(18))
     #print(gs.get_edge_weight(9,20))
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
