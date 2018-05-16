@@ -218,6 +218,7 @@ class Map:
         for node1 in self._map.nodes():
             for node2 in self._map.nodes():
                 if not nx.has_path(self._map, node1, node2):
+                    print(node1, node2)
                     return False
         return True
 
@@ -394,26 +395,10 @@ def draw_route(src: int, dest: int, graph_name: str, graph):
 
 
 if __name__ == "__main__":
-    gs = Map("data/node_list_new.csv","data/edge_list_new.csv", False)
-    #print(gs.draw_map('Xcaret Tourist Map'))
-# print(gs.shortest_path(10,28))
-#print(gs.get_edge_weight(19,28))
-#gs.set_edge_weight(19,28, 40)
-#print(gs.get_edge_weight(19,28))
-#print(gs.all_disabled_friendly_node())
-#gs.get_nodes_attributes(9)
-#print(gs.find_nearest_bathroom(12))
-    #print(gs.go_through_all_nodes())
-    #draw_route(39,36,'Sample',gs.get_map())
-    gs.draw_map("sample")
-    #print(gs.print_all_attractions())
-#gs.shortest_path(9,20)
-# gs.print_all_attractions()
-#print(gs.get_node_name(9))
-#print(gs.all_disabled_friendly_node())
-#gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
-#print(gs.shortest_path(18,12))
-#print(gs.go_through_all_nodes())
+    gs = Map("data/node_list_new.csv","data/edge_list_new.csv", True)
+    gs.draw_map("Sample map")
+    gs.go_through_all_nodes()
+
 
 
 
