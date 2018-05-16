@@ -335,11 +335,14 @@ class Map:
         text_msg = text_msg.split('\n')
         msg = ''
         for line in text_msg:
-            msg += line[17:len(line) - 3].ljust(70," ") + line[-3:].ljust(1," ") + '\n'
-            #msg += '{: <50} {: >3} \n'.format(line[17:len(line) - 2], line[-2:])
-        msg = msg[:-2]
-        plt.text(-50, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
-        #fig.set_facecolor('#95d0fc')
+            number = line[-3:].strip()
+            name = ("".join(line[:-3].split("\t"))).strip()
+            if len(number) == 2:
+                msg += number + ": " + name + '\n'
+            if len(number) == 1:
+                msg += number + "  : " + name + "\n"
+        msg = msg[:-1]
+        plt.text(-70, 480, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
         plt.legend(loc="lower right", shadow=True, fontsize='xx-large', markerscale=0.7, fancybox=True, labelspacing=0.8)
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         plt.axis("off")
