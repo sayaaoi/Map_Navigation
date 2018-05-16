@@ -53,8 +53,8 @@ while True:
 def user_interface():
     map_img = Map(node_file, edge_file, False)
 
-    print("""=========================== Welcome to %s ============================
-                    -------- Attraction names and ID numbers -------- \n""" % site_name)
+    print(blue_bold + """=========================== Welcome to %s ============================
+                    -------- Attraction names and ID numbers -------- \n""" % site_name + endc)
     # print all attractions alphabetically
     print(map_img.print_all_attractions())
     while True:
@@ -67,7 +67,7 @@ def user_interface():
                     print(err, "Please try again!")
                     continue
                 if which_node not in map_img.get_map().nodes:
-                    print("Wrong attraction number. Please type again.")
+                    print(red_col + "Wrong attraction number. Please type again." + endc)
                 else:
                     map_img.get_nodes_attributes(which_node)
                     while True:
@@ -84,7 +84,7 @@ def user_interface():
         elif node_attr_q == "3":
             exit()
         else:
-            print("Invalid input. Please try again!")
+            print(red_col + "Invalid input. Please try again!" + endc)
 
     while True:
         ada = input("Would you a handicapped-accessible route? \n1.Yes\n2.No\n")
@@ -97,22 +97,34 @@ def user_interface():
             map_img.draw_map(site_name)
             break
         else:
-            print("Invalid input, you must type 1 or 2")
+            print(red_col + "Invalid input, you must type 1 or 2" + endc)
 
     while True:
-        print("Let me show you the shortest path from one location to another!")
-        try:
-            src = eval(input("Please first type in the number of the starting location: \n"))
-            end = eval(input("Please then type in the number of the destination location: \n"))
-        except NameError as err:
-            print(err, "Please try again!")
-            continue
-        if (src or end) not in map_img.get_map().nodes:
-            print("Wrong attraction number. Please type again.")
-        else:
-            map_img.print_shortest_route(src, end)
-            route_viz.draw_route(src, end, site_name, map_img.get_map())
-            break
+        print("\nLet me show you the shortest path from one location to another!")
+        while True:
+            try:
+                src = eval(input("Please first type in the number of the starting location: \n"))
+            except NameError as err:
+                print(err, "Please try again!")
+                continue
+            if src not in map_img.get_map().nodes:
+                print(red_col + "Wrong attraction number. Please type again." + endc)
+            else:
+                break
+
+        while True:
+            try:
+                end = eval(input("Please then type in the number of the destination location: \n"))
+            except NameError as err:
+                print(err, "Please try again!")
+                continue
+            if end not in map_img.get_map().nodes:
+                print(red_col + "Wrong attraction number. Please type again." + endc)
+            else:
+                break
+        map_img.print_shortest_route(src, end)
+        route_viz.draw_route(src, end, site_name, map_img.get_map())
+        break
 
 if __name__ == "__main__":
     user_interface()
