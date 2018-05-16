@@ -1,4 +1,5 @@
 from Navigation import *
+import Route_Visualization as route_viz
 from pathlib import Path
 
 # colored console output
@@ -100,9 +101,18 @@ def user_interface():
 
     while True:
         print("Let me show you the shortest path from one location to another!")
-        src = eval(input("Please first type in the number of the starting location: \n"))
-        end = eval(input("Please then type in the number of the destination: \n"))
-
+        try:
+            src = eval(input("Please first type in the number of the starting location: \n"))
+            end = eval(input("Please then type in the number of the destination location: \n"))
+        except NameError as err:
+            print(err, "Please try again!")
+            continue
+        if (src or end) not in map_img.get_map().nodes:
+            print("Wrong attraction number. Please type again.")
+        else:
+            map_img.print_shortest_route(src, end)
+            route_viz.draw_route(src, end, site_name, map_img.get_map())
+            break
 
 if __name__ == "__main__":
     user_interface()
