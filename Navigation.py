@@ -4,6 +4,10 @@ import pandas as pd
 import sys
 from datetime import datetime
 import math
+from matplotlib import colors as mcolors
+
+col_collection = list(mcolors._colors_full_map.keys())
+col_name = [col[5:] for col in col_collection]
 
 
 class Map:
@@ -285,8 +289,11 @@ class Map:
             raise ValueError("Unexpected location number!")
 
     def draw_map(self, graph_name: str):
-        fig = plt.figure()
+        fig = plt.figure(figsize=(15, 10))
         plt.title(graph_name)
+        edge_type = nx.get_edge_attributes(self._map, 'type')
+        unique_type = set(list(edge_type.values()))
+        node_pos = nx.get_node_attributes(self._map, 'pos')
         color_map = []
         for node in self._map:
             if self._map.nodes[node]['type'] == 'entertainment':
@@ -296,20 +303,19 @@ class Map:
             else:
                 color_map.append('green')
 
-        weights = [(math.log(self._map[u][v]['distance']))/5 for u,v in self._map.edges]
-        nx.draw(self._map, pos=nx.get_node_attributes(self._map, 'pos'),node_size=550, node_color=color_map, with_labels=True,
-                width = weights, arrowsize = 6.5)
+        nx.draw(self._map, node_pos, node_size=1000, node_color=color_map, with_labels=True)
 
         # edge_labels = nx.get_edge_attributes(self._map,'type')
         # nx.draw_networkx_edge_labels(self._map,pos=nx.get_node_attributes(self._map, 'pos'),edge_labels=edge_labels, font_size=5)
         # plt.plot(self._map,'EdgeLabel',self._map.edges['type'])
 
-        #fig.set_facecolor('#b6f442')
+        #fig.set_facecolor('#95d0fc')
         plt.legend()
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
+        #plt.axis("off")
         return plt.show()
 
-    def draw_route(self, src: int, dest: int):
+    def draw_route(self, src: int, dest: int, graph_name: str):
         """
         Visualize shortest path between nodes.
 
@@ -317,12 +323,13 @@ class Map:
         :param dest: ending node number
         :return: map with highlighted shortest path
         """
-        plt.figure(figsize=(15, 10))
+        #plt.subplot(111)
+        fig = plt.figure(figsize=(15, 10))
         temp = self.shortest_path(src, dest, weight='distance')
         # The positions of each node are stored in a dictionary
         node_pos = nx.get_node_attributes(self._map, 'pos')
-        # The edge weights of each arcs are stored in a dictionary
-        edge_type = nx.get_edge_attributes(self._map, 'type')
+        # Water edges
+        edge_water = [(data[0], data[1]) for data in list(self._map.edges.data('type')) if data[2] == "water"]
         # extract node number
         path = [loc[0] for loc in temp]
 
@@ -332,13 +339,24 @@ class Map:
         node_col = ['white' if node not in path else 'red' for node in self._map.nodes]
         edge_col = ['black' if edge not in red_edges else 'red' for edge in self._map.edges]
         edge_width = [1 if edge not in red_edges else 4 for edge in self._map.edges]
+        edge_label_text = {}
+        for edge in self._map.edges:
+            if edge in edge_water:
+                edge_label_text[edge] = "water"
+            else:
+                edge_label_text[edge] = ""
         # draw the nodes
-        nx.draw_networkx(self._map, node_pos, node_color=node_col, node_size=550, edge_col="k", font_size=13)
+        nx.draw_networkx(self._map, node_pos, node_color=node_col, node_size=1000, font_size=13)
+        nx.draw_networkx_nodes(self._map, node_pos, edgecolors='black', node_color=node_col, node_size=1000)
         # draw the edges
         nx.draw_networkx_edges(self._map, node_pos, edge_color=edge_col, width=edge_width)
         # Draw the edge labels
-        nx.draw_networkx_edge_labels(self._map, node_pos, edge_color=edge_col, edge_labels=edge_type, font_size=8)
+        nx.draw_networkx_edge_labels(self._map, node_pos, edge_labels=edge_label_text, font_size=8)
+        #fig.set_facecolor('#96f97b')
         plt.axis("off")
+
+        # plt.subplot(112)
+        # self.draw_map(graph_name)
         return plt.show()
 
 
@@ -353,7 +371,8 @@ if __name__ == "__main__":
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
     #print(gs.go_through_all_nodes())
-    gs.draw_route(18,42)
+    gs.draw_route(39,36,'Sample')
+    #gs.draw_map("sample")
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
 #print(gs.get_node_name(9))
@@ -361,12 +380,6 @@ if __name__ == "__main__":
 #gs2 = Navigation("data/node_list2.csv","data/edge_list.csv", True)
 #print(gs.shortest_path(18,12))
 #print(gs.go_through_all_nodes())
-#print(gs.attractions_open('110am'))
 
-# print(gs2.shortest_path(10,28))
-#gs.show_shortest_route(18,12)
-#print(gs.get_direction(9,20))
-# gs.visualization()
-# gs2.visualization()
 
 
