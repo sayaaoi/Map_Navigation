@@ -52,6 +52,9 @@ class Map:
         nx.set_edge_attributes(graph, edge_attrs)
         return graph
 
+    def get_map(self):
+        return self._map
+
     def get_edge_weight(self, node1, node2):
         if (node1 and node2) in self._map.nodes:
             return self._map[node1][node2]['distance']
@@ -289,8 +292,15 @@ class Map:
             raise ValueError("Unexpected location number!")
 
     def draw_map(self, graph_name: str):
+        """
+        Draw the full map with "water" edges specified and a list of attractions with numbers
+
+        :param graph_name: the name of the map
+        :return: a full map with nodes/edges and labels
+        """
         fig = plt.figure(figsize=(15, 10))
-        plt.title(graph_name)
+        fig.suptitle(graph_name, fontsize=30)
+
         node_pos = nx.get_node_attributes(self._map, 'pos')
         edge_color = ['blue' if self._map[edge[0]][edge[1]]['type'] == "water" else "k" for edge in self._map.edges]
         edge_water_width = [2 if item == 'blue' else 1 for item in edge_color]
@@ -308,39 +318,31 @@ class Map:
         # list of unique node types
         unique_type = list(set(list(node_type.values())))
         unique_type_num = len(unique_type)
+        # list of unique colors mapping with unique_type by index
         type_color = [random.choice(color_name) for i in range(unique_type_num)]
-        color_map = []
-        for node in self._map:
-            for i in range(unique_type_num):
-                if self._map.nodes[node]['type'] == unique_type[i]:
-                    color_map.append(type_color[i])
 
         type_node_map = {}
         for type in unique_type:
             type_node_map[type] = [node for node in node_type if node_type[node] == type]
 
-        nx.draw(self._map, node_pos, node_size=1000, node_color=color_map, edge_color=edge_color,
-                width=edge_water_width, with_labels=True, font_size=16)
-        nx.draw_networkx_edge_labels(self._map, node_pos, edge_labels=edge_water_label, font_size=13)
         for i, color in enumerate(type_color):
-            nx.draw_networkx_nodes(self._map, node_pos, node_list = type_node_map[unique_type[i]], node_color=color, label=unique_type[i])
-        #nx.draw_networkx_nodes(self._map, node_pos, node_color=color_map, label=)
-        #nx.draw_networkx_nodes(self._map, node_pos, label=unique_type)
-        #plt.colorbar()
+            nx.draw_networkx(self._map, node_pos, nodelist=type_node_map[unique_type[i]], node_color=color, node_size=1000, edge_color=edge_color,
+                             width=edge_water_width, with_labels=True, font_size=16, label=unique_type[i])
+        nx.draw_networkx_edge_labels(self._map, node_pos, edge_labels=edge_water_label, font_size=13)
+
         text_msg = self.print_all_attractions()
         # reformat (print all attractions)
         text_msg = text_msg.split('\n')
         msg = ''
         for line in text_msg:
-            print(len(line))
             msg += line[17:len(line) - 3].ljust(70," ") + line[-3:].ljust(1," ") + '\n'
             #msg += '{: <50} {: >3} \n'.format(line[17:len(line) - 2], line[-2:])
         msg = msg[:-2]
-        plt.text(-90, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
+        plt.text(-50, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
         #fig.set_facecolor('#95d0fc')
-        plt.legend()
+        plt.legend(loc="lower right", shadow=True, fontsize='xx-large', markerscale=0.7, fancybox=True, labelspacing=0.8)
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
-        #plt.axis("off")
+        plt.axis("off")
         return plt.show()
 
     def draw_route(self, src: int, dest: int, graph_name: str):
