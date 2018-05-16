@@ -326,8 +326,10 @@ class Map:
         msg = ''
         for line in text_msg:
             msg += line[17:] + '\n'
-
-        plt.text(50, 450, msg, fontsize=12, ha='center')
+            print(msg)
+            #msg += '{: <50} {: >3} \n'.format(line[17:len(line) - 2], line[-2:])
+        msg = msg[:-2]
+        plt.text(-90, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
         #fig.set_facecolor('#95d0fc')
         #plt.legend(handles=unique_type)
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
