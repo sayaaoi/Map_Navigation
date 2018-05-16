@@ -26,4 +26,6 @@ to starting at the last end point.
 [Set node attributes](https://networkx.github.io/documentation/stable/reference/generated/networkx.classes.function.set_node_attributes.html)<br>
 [Encoding issue when reading files](https://stackoverflow.com/a/49150749)<br>
 [Time format in Python](https://docs.python.org/3/library/time.html)<br>
-[NetworkX tutorial](http://avinashu.com/tutorial/pythontutorialnew/NetworkXBasics.html)
+[NetworkX tutorial](http://avinashu.com/tutorial/pythontutorialnew/NetworkXBasics.html)<br>
+[Named colors in Python](https://stackoverflow.com/questions/22408237/named-colors-in-matplotlib?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)<br>
+[Text in pyplot](https://stackoverflow.com/questions/8482588/putting-text-in-top-left-corner-of-matplotlib-plot?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)<br>

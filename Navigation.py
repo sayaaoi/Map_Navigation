@@ -315,23 +315,30 @@ class Map:
                 if self._map.nodes[node]['type'] == unique_type[i]:
                     color_map.append(type_color[i])
 
+        type_node_map = {}
+        for type in unique_type:
+            type_node_map[type] = [node for node in node_type if node_type[node] == type]
+
         nx.draw(self._map, node_pos, node_size=1000, node_color=color_map, edge_color=edge_color,
                 width=edge_water_width, with_labels=True, font_size=16)
         nx.draw_networkx_edge_labels(self._map, node_pos, edge_labels=edge_water_label, font_size=13)
+        for i, color in enumerate(type_color):
+            nx.draw_networkx_nodes(self._map, node_pos, node_list = type_node_map[unique_type[i]], node_color=color, label=unique_type[i])
+        #nx.draw_networkx_nodes(self._map, node_pos, node_color=color_map, label=)
         #nx.draw_networkx_nodes(self._map, node_pos, label=unique_type)
-
+        #plt.colorbar()
         text_msg = self.print_all_attractions()
         # reformat (print all attractions)
         text_msg = text_msg.split('\n')
         msg = ''
         for line in text_msg:
-            msg += line[17:] + '\n'
-            print(msg)
+            print(len(line))
+            msg += line[17:len(line) - 3].ljust(70," ") + line[-3:].ljust(1," ") + '\n'
             #msg += '{: <50} {: >3} \n'.format(line[17:len(line) - 2], line[-2:])
         msg = msg[:-2]
         plt.text(-90, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
         #fig.set_facecolor('#95d0fc')
-        #plt.legend(handles=unique_type)
+        plt.legend()
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         #plt.axis("off")
         return plt.show()
