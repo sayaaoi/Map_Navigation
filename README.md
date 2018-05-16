@@ -11,7 +11,7 @@ The program uses Python NetworkX library. I use it as the main data structure wi
 When the program runs, it will:<br>
 >o Alphabetically list all the attractions it knows about with ID numbers. <br>
 o Ask the user to enter their starting point and the next attraction they want to visit.<br>
-o Ask whether they require a handicapped-accessible route.<br>
+o Ask whether the user requires a handicapped-accessible route.<br>
 o Then it will calculate a shortest path and print clear turn-by-turn navigation
 instructions with total distance.<br>
 o Then it should allow the user to quit or enter another navigation query, which defaults
@@ -29,3 +29,7 @@ to starting at the last end point.
 [NetworkX tutorial](http://avinashu.com/tutorial/pythontutorialnew/NetworkXBasics.html)<br>
 [Named colors in Python](https://stackoverflow.com/questions/22408237/named-colors-in-matplotlib?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)<br>
 [Text in pyplot](https://stackoverflow.com/questions/8482588/putting-text-in-top-left-corner-of-matplotlib-plot?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)<br>
+[plt title font size](https://stackoverflow.com/questions/25036699/how-to-increase-plt-title-font-size/25037902?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)<br>
+[plt legend argument](https://matplotlib.org/api/_as_gen/matplotlib.pyplot.legend.html)<br>
+[Doctest_whitespace](https://docs.python.org/3/library/doctest.html#doctest.NORMALIZE_WHITESPACE)<br>
+
