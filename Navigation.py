@@ -3,11 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 from datetime import datetime
-import math
+import random
 from matplotlib import colors as mcolors
-
-col_collection = list(mcolors._colors_full_map.keys())
-col_name = [col[5:] for col in col_collection]
 
 
 class Map:
@@ -99,11 +96,14 @@ class Map:
         :return: print formatted locations
         """
         sort_attraction = {}
+        print_info = ""
         for (idx, attr) in self._map.nodes.items():
             sort_attraction[idx] = attr['name']
         all_attractions = sorted(sort_attraction.items(), key=lambda x: x[1])
         for attraction in all_attractions:
-            print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
+            #print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
+            print_info += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3} \n'.format(attraction[1], attraction[0])
+        return print_info
 
     def get_nodes_attributes(self, node: int):
         """
@@ -121,7 +121,7 @@ class Map:
                 food = "sells food."
             else:
                 food = "doesn't sell food."
-            print(self._map.nodes[node]['name'] + "is a place of", self._map.nodes[node]['type'] + ".",'\n' + "It opens at",
+            print(self._map.nodes[node]['name'] + "is a place of", self._map.nodes[node]['type'] + ".", '\n' + "It opens at",
                   self._map.nodes[node]['open_time'], "and closes at", self._map.nodes[node]['close_time'] + ".", '\n' +
                   "The average waiting time is", self._map.nodes[node]['avg_wait_time'], "minutes.",
                   "The fare of this place is " + self._map.nodes[node]['fee'] + " dollar", '\n' +
@@ -244,7 +244,7 @@ class Map:
                 if i == len(paths) - 1:
                     print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0], path[1]))
                 else:
-                    print("Then, go {0} to {2}({1})".format(direction, path[0],path[1]))
+                    print("Then, go {0} to {2}({1})".format(direction, path[0], path[1]))
 
     def find_nearest_bathroom(self, cur_location: int) ->str:
         """
@@ -291,26 +291,45 @@ class Map:
     def draw_map(self, graph_name: str):
         fig = plt.figure(figsize=(15, 10))
         plt.title(graph_name)
-        edge_type = nx.get_edge_attributes(self._map, 'type')
-        unique_type = set(list(edge_type.values()))
         node_pos = nx.get_node_attributes(self._map, 'pos')
+        edge_color = ['blue' if self._map[edge[0]][edge[1]]['type'] == "water" else "k" for edge in self._map.edges]
+        edge_water_width = [2 if item == 'blue' else 1 for item in edge_color]
+        edge_water_label = {}
+        for edge in self._map.edges:
+            if self._map[edge[0]][edge[1]]['type'] == "water":
+                edge_water_label[edge] = "water"
+            else:
+                edge_water_label[edge] = ""
+
+        # All named colors
+        color_name = [name for name in mcolors.cnames.keys()]
+        # a dictionary of each node's type
+        node_type = nx.get_node_attributes(self._map, 'type')
+        # list of unique node types
+        unique_type = list(set(list(node_type.values())))
+        unique_type_num = len(unique_type)
+        type_color = [random.choice(color_name) for i in range(unique_type_num)]
         color_map = []
         for node in self._map:
-            if self._map.nodes[node]['type'] == 'entertainment':
-                color_map.append('brown')
-            elif self._map.nodes[node]['type'] == 'culture':
-                color_map.append('skyblue')
-            else:
-                color_map.append('green')
+            for i in range(unique_type_num):
+                if self._map.nodes[node]['type'] == unique_type[i]:
+                    color_map.append(type_color[i])
 
-        nx.draw(self._map, node_pos, node_size=1000, node_color=color_map, with_labels=True)
+        nx.draw(self._map, node_pos, node_size=1000, node_color=color_map, edge_color=edge_color,
+                width=edge_water_width, with_labels=True, font_size=16)
+        nx.draw_networkx_edge_labels(self._map, node_pos, edge_labels=edge_water_label, font_size=13)
+        #nx.draw_networkx_nodes(self._map, node_pos, label=unique_type)
 
-        # edge_labels = nx.get_edge_attributes(self._map,'type')
-        # nx.draw_networkx_edge_labels(self._map,pos=nx.get_node_attributes(self._map, 'pos'),edge_labels=edge_labels, font_size=5)
-        # plt.plot(self._map,'EdgeLabel',self._map.edges['type'])
+        text_msg = self.print_all_attractions()
+        # reformat (print all attractions)
+        text_msg = text_msg.split('\n')
+        msg = ''
+        for line in text_msg:
+            msg += line[17:] + '\n'
 
+        plt.text(50, 450, msg, fontsize=12, ha='center')
         #fig.set_facecolor('#95d0fc')
-        plt.legend()
+        #plt.legend(handles=unique_type)
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         #plt.axis("off")
         return plt.show()
@@ -371,8 +390,9 @@ if __name__ == "__main__":
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
     #print(gs.go_through_all_nodes())
-    gs.draw_route(39,36,'Sample')
-    #gs.draw_map("sample")
+    #gs.draw_route(39,36,'Sample')
+    gs.draw_map("sample")
+    #print(gs.print_all_attractions())
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
 #print(gs.get_node_name(9))
