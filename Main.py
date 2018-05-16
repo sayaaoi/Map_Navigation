@@ -57,7 +57,7 @@ def user_interface():
     # print all attractions alphabetically
     print(map_img.print_all_attractions())
     while True:
-        node_attr_q = input("Would you like to know some information about a specific attraction? \n1.Yes\n2.No\n")
+        node_attr_q = input("Would you like to know some information about a specific attraction? \n1.Yes\n2.No\n3.Quit\n")
         if node_attr_q == "1":
             while True:
                 try:
@@ -69,16 +69,40 @@ def user_interface():
                     print("Wrong attraction number. Please type again.")
                 else:
                     map_img.get_nodes_attributes(which_node)
+                    while True:
+                        addition = input("\nWould you like to know information about other nodes? \n1.Yes\n2.No\n")
+                        if addition == "2":
+                            break
+                        elif addition == "1":
+                            break
                     break
-                    # while True:
-                    #     addition = input("Would you like to know information about other nodes? \n1.Yes\n2.No\n")
-                    #     if addition == "2":
 
             break
         elif node_attr_q == "2":
+            break
+        elif node_attr_q == "3":
             exit()
         else:
             print("Invalid input. Please try again!")
+
+    while True:
+        ada = input("Would you a handicapped-accessible route? \n1.Yes\n2.No\n")
+        if ada == "1":
+            map_img = Map(node_file, edge_file, True)
+            print("This is %s map. "%site_name)
+            map_img.draw_map(site_name)
+        elif ada == "2":
+            print("This is %s map. " % site_name)
+            map_img.draw_map(site_name)
+            break
+        else:
+            print("Invalid input, you must type 1 or 2")
+
+    while True:
+        print("Let me show you the shortest path from one location to another!")
+        src = eval(input("Please first type in the number of the starting location: \n"))
+        end = eval(input("Please then type in the number of the destination: \n"))
+
 
 if __name__ == "__main__":
     user_interface()
