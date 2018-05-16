@@ -300,7 +300,7 @@ class Map:
         """
         fig = plt.figure(figsize=(15, 10))
         fig.suptitle(graph_name, fontsize=30)
-
+        plt.ylim(-100, 1150)
         node_pos = nx.get_node_attributes(self._map, 'pos')
         edge_color = ['blue' if self._map[edge[0]][edge[1]]['type'] == "water" else "k" for edge in self._map.edges]
         edge_water_width = [2 if item == 'blue' else 1 for item in edge_color]
@@ -342,7 +342,7 @@ class Map:
             if len(number) == 1:
                 msg += number + "  : " + name + "\n"
         msg = msg[:-1]
-        plt.text(-70, 480, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
+        plt.text(-70, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
         plt.legend(loc="lower right", shadow=True, fontsize='xx-large', markerscale=0.7, fancybox=True, labelspacing=0.8)
         #plt.savefig('map1.png', facecolor=fig.get_facecolor())
         plt.axis("off")
@@ -359,9 +359,9 @@ def draw_route(src: int, dest: int, graph_name: str, graph):
     :param graph: graph object, could be any Graph(nx.Graph(), nx.DiGraph(), etc.)
     :return: map with highlighted shortest path
     """
-    #plt.subplot(111)
     fig = plt.figure(figsize=(15, 10))
     fig.suptitle(graph_name, fontsize=30)
+    plt.ylim(-100, 1150)
     # get nodes numbers in shortest path
     path = nx.dijkstra_path(graph, src, dest, weight="distance")
     # The positions of each node are stored in a dictionary
@@ -390,9 +390,6 @@ def draw_route(src: int, dest: int, graph_name: str, graph):
     nx.draw_networkx_edge_labels(graph, node_pos, edge_labels=edge_label_text, font_size=8)
     #fig.set_facecolor('#96f97b')
     plt.axis("off")
-
-    # plt.subplot(112)
-    # self.draw_map(graph_name)
     return plt.show()
 
 
@@ -407,8 +404,8 @@ if __name__ == "__main__":
 #gs.get_nodes_attributes(9)
 #print(gs.find_nearest_bathroom(12))
     #print(gs.go_through_all_nodes())
-    draw_route(39,36,'Sample',gs.get_map())
-    #gs.draw_map("sample")
+    #draw_route(39,36,'Sample',gs.get_map())
+    gs.draw_map("sample")
     #print(gs.print_all_attractions())
 #gs.shortest_path(9,20)
 # gs.print_all_attractions()
