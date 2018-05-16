@@ -1,3 +1,115 @@
+"""
+Project: Map navigation
+Author: Yuejun Wu
+Date: May 2018
+
+Get access to edge weight
+>>> gs = Map("data/node_list_new.csv", "data/edge_list_new.csv", False)
+>>> print(gs.get_edge_weight(19, 18))
+106.3
+>>> gs_disable = Map("data/node_list_new.csv", "data/edge_list_new.csv", True)
+>>> print(gs_disable.get_edge_weight(6, 5))
+Traceback (most recent call last):
+...
+KeyError: "Edge doesn't exist!"
+
+Set edge weight
+>>> gs.set_edge_weight(19, 18, 100)
+>>> print(gs.get_edge_weight(19, 18))
+100
+>>> gs_disable.set_edge_weight(200, 100, 87)
+Traceback (most recent call last):
+...
+ValueError: Unexpected input!
+
+>>> gs.get_node_name(17)
+'Edible Mushroom Farm'
+>>> gs.set_node_name(17, "hello there")
+>>> gs.get_node_name(17)
+'hello there'
+>>> gs_disable.set_node_name(88, 'xx')
+Traceback (most recent call last):
+...
+ValueError: Invalid input! New name must be string, location should exist.
+
+>>> gs.get_direction(19, 12)
+'north'
+>>> gs_disable.get_direction(20, 7)
+'northeast'
+>>> gs_disable.get_direction(100,'ff')
+Traceback (most recent call last):
+...
+ValueError: Unexpected edges!
+
+>>> gs.disabled_friendly_node(20)
+True
+>>> gs.disabled_friendly_node(dfd)
+Traceback (most recent call last):
+...
+NameError: name 'dfd' is not defined
+>>> gs_disable.disabled_friendly_node(89)
+Traceback (most recent call last):
+...
+ValueError: Unexpected location number!
+
+>>> gs.attractions_open('11PM')
+'Sorry, no attraction is open.'
+>>> gs_disable.attractions_open('34pm')
+'Sorry the time format is invalid.'
+>>> gs_disable.attractions_open('3333Pm')
+Traceback (most recent call last):
+...
+ValueError: Invalid time format!
+>>> gs.attractions_open('1289PM')
+'Sorry the range of minute is [0,60] and the range of hour is [0,12]'
+
+Check if any node in the map can reach to the rest of nodes
+>>> gs.go_through_all_nodes()
+True
+>>> gs_disable.go_through_all_nodes()
+True
+
+>>> gs.shortest_path(11,13)
+Traceback (most recent call last):
+...
+ValueError: Unexpected location number!
+>>> gs.shortest_path(17, 39)
+[(17, 'hello there'), (18, 'Natural Museum of Orchids & Bromeliads'), (39, 'Tropical Jungle Trail Exit')]
+
+>>> gs.print_shortest_route(17, 39)
+From hello there(17)
+Then, go southwest to Natural Museum of Orchids & Bromeliads(18)
+Finally, go north to your destination: Tropical Jungle Trail Exit(39)
+
+>>> gs_disable.find_nearest_bathroom(39) # doctest: +NORMALIZE_WHITESPACE
+The nearest location with bathroom is:
+'Underground Rivers Entrance(12)'
+>>> gs.find_nearest_bathroom(34)
+'Your current location has a bathroom.'
+
+>>> gs_disable.find_nearest_foodplace(15) # doctest: +NORMALIZE_WHITESPACE
+The nearest location that sells food is:
+'Main Plaza(28)'
+>>> gs_disable.find_nearest_foodplace(9)
+'Your current location has a place for food.'
+>>> gs.find_nearest_foodplace(100)
+Traceback (most recent call last):
+...
+ValueError: Unexpected location number!
+
+>>> gs_disable.get_nodes_attributes(9) # doctest: +NORMALIZE_WHITESPACE
+Mayan Villageis a place of Culture.
+It opens at 9am and closes at 7pm.
+The average waiting time is 5 minutes. The fare of this place is 0 dollar.
+This place doesn't have a bathroom.
+This place sells food.
+
+>>> gs.all_disabled_friendly_node() # doctest: +NORMALIZE_WHITESPACE
+All disabled friendly attractions are:
+'9: Mayan Village\\n20: Archaeological Zones\\n7: Jaguar Island\\n6: Coral reef aquarium\\n10: Voladores ritual ceremory of the Voladores \\n5: Sea turtles\\n3: Snuba family\\n8: Butterfuly Pavilion\\n35: Stain-glass Plaza\\n28: Main Plaza\\n18: Natural Museum of Orchids & Bromeliads\\n42: Chapel of Guadalupe\\n34: Puente al Paraiso\\n14: Teatro Gran Tlachco\\n15: Regional Wildlife Breeding Farm\\n38: House of Whispers\\n21: Snorkeling Inlet\\n17: hello there\\n'
+
+"""
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -56,13 +168,13 @@ class Map:
         return self._map
 
     def get_edge_weight(self, node1, node2):
-        if (node1 and node2) in self._map.nodes:
+        if (node1, node2) in self._map.edges:
             return self._map[node1][node2]['distance']
         else:
-            raise KeyError('Unexpected location number!')
+            raise KeyError('Edge doesn\'t exist!')
 
     def set_edge_weight(self, node1, node2, new_distance):
-        if (node1, node2) in self._map.edges & (isinstance(new_distance, float) or isinstance(new_distance, int)):
+        if (node1, node2) in self._map.edges and (isinstance(new_distance, float) or isinstance(new_distance, int)):
             self._map[node1][node2]['distance'] = new_distance
         else:
             raise ValueError("Unexpected input!")
@@ -127,7 +239,7 @@ class Map:
             print(self._map.nodes[node]['name'] + "is a place of", self._map.nodes[node]['type'] + ".", '\n' + "It opens at",
                   self._map.nodes[node]['open_time'], "and closes at", self._map.nodes[node]['close_time'] + ".", '\n' +
                   "The average waiting time is", self._map.nodes[node]['avg_wait_time'], "minutes.",
-                  "The fare of this place is " + self._map.nodes[node]['fee'] + " dollar", '\n' +
+                  "The fare of this place is " + self._map.nodes[node]['fee'] + " dollar.", '\n' +
                   "This place", bathroom, "\n" + "This place", food)
         else:
             raise ValueError("Unexpected location number!")
@@ -279,7 +391,7 @@ class Map:
         """
         if cur_location in self._map.nodes:
             if self._map.nodes[cur_location]['has_food'] == 1:
-                print('Your current location has a place for food.')
+                return 'Your current location has a place for food.'
             dist = sys.maxsize
             attr_num = 0
             for food in [idx for idx in self._map.nodes() if self._map.nodes[idx]['has_food'] == 1]:
@@ -344,7 +456,7 @@ class Map:
         msg = msg[:-1]
         plt.text(-70, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
         plt.legend(loc="lower right", shadow=True, fontsize='xx-large', markerscale=0.7, fancybox=True, labelspacing=0.8)
-        #plt.savefig('map1.png', facecolor=fig.get_facecolor())
+        # plt.savefig('map1.png', facecolor=fig.get_facecolor())
         plt.axis("off")
         return plt.show()
 
@@ -388,22 +500,24 @@ def draw_route(src: int, dest: int, graph_name: str, graph):
     nx.draw_networkx_edges(graph, node_pos, edge_color=edge_col, width=edge_width)
     # Draw the edge labels
     nx.draw_networkx_edge_labels(graph, node_pos, edge_labels=edge_label_text, font_size=8)
-    #fig.set_facecolor('#96f97b')
+    # fig.set_facecolor('#96f97b')
     plt.axis("off")
     return plt.show()
 
 
 if __name__ == "__main__":
     # Load data
-    gs = Map("data/node_list_new.csv","data/edge_list_new.csv", False)
-    gs_disable = Map("data/node_list_new.csv","data/edge_list_new.csv", True)
+    gs = Map("data/node_list_new.csv", "data/edge_list_new.csv", False)
+    gs_disable = Map("data/node_list_new.csv", "data/edge_list_new.csv", True)
 
-    # Draw full map
-    gs.draw_map("Sample map")
-    gs_disable.draw_map("Sample map(ADA)")
+    # # Draw full map
+    # gs.draw_map("Sample map")
+    # gs_disable.draw_map("Sample map(ADA)")
+    #
+    # # Draw path
+    # draw_route(17, 9, "sample route(non-ADA)", gs.get_map())
+    # draw_route(17, 9, "sample route(ADA)", gs_disable.get_map())
 
-    # Draw path
-    draw_route(17, 9, "sample route(non-ADA)", gs.get_map())
-    draw_route(17, 9, "sample route(ADA)", gs_disable.get_map())
-
-
+    # print(gs.get_direction(19, 12))
+    gs.set_edge_weight(19, 18, 100)
+    #print(gs_disable.get_edge_weight(6, 5))
