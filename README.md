@@ -22,11 +22,13 @@ to starting at the last end point.
 #### Full map 
 
 #### Route map
-For example, we want to know the path from node 17 to node 36. The first image is the path for people who don't need 
+For example, we want to know the path from node 17 to node 36. The first image is the path for people who don't have 
 handicapped-accessible requirement. The second image is the path for people have handicapped-accessible requirement. 
 
+Path for non-disabled people: <br>
 ![route_map1](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/route_map1.png 'Non-ADA path') 
 
+Path for disabled people: <br>
 ![route_map2](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/route_map2.png 'ADA path')
 
 
