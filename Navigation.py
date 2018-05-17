@@ -237,7 +237,7 @@ class Map:
                 food = "sells food."
             else:
                 food = "doesn't sell food."
-            print(self._map.nodes[node]['name'] + "is a place of", self._map.nodes[node]['type'] + ".", '\n' + "It opens at",
+            print(self._map.nodes[node]['name'] + " is a place of", self._map.nodes[node]['type'] + ".", '\n' + "It opens at",
                   self._map.nodes[node]['open_time'], "and closes at", self._map.nodes[node]['close_time'] + ".", '\n' +
                   "The average waiting time is", self._map.nodes[node]['avg_wait_time'], "minutes.",
                   "The fare of this place is " + self._map.nodes[node]['fee'] + " dollar.", '\n' +
@@ -247,7 +247,7 @@ class Map:
 
     def disabled_friendly_node(self, node: int) ->bool:
         """
-        Check if a certain node/attraction is available for disabled people
+        Check whether a given location is suitable for disabled people
         :param node: location number
         :return:
         """
@@ -287,7 +287,7 @@ class Map:
 
     def attractions_open(self, time: str):
         """
-        Display all attractions that are open at a specific time
+        Display all attractions that are open at a given time
 
         :param time: current time
         :return: all attractions that are still open
@@ -359,6 +359,7 @@ class Map:
                 direction = self.get_direction(paths[i - 1][0], path[0])
                 if i == len(paths) - 1:
                     print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0], path[1]))
+                    print("The total distance is: ", nx.dijkstra_path_length(self.get_map(), start, end), "miles")
                 else:
                     print("Then, go {0} to {2}({1})".format(direction, path[0], path[1]))
 
@@ -466,11 +467,12 @@ if __name__ == "__main__":
     # Load data
     gs = Map("data/node_list_new.csv", "data/edge_list_new.csv", False)
     gs_disable = Map("data/node_list_new.csv", "data/edge_list_new.csv", True)
+    gs.print_shortest_route(17, 36)
 
     # Draw full map
-    gs.draw_map("Sample map")
-    gs_disable.draw_map("Sample map(ADA)")
+    # gs.draw_map("Sample map")
+    # gs_disable.draw_map("Sample map(ADA)")
 
     # Draw path
-    route_viz.draw_route(17, 9, "sample route(non-ADA)", gs.get_map())
-    route_viz.draw_route(17, 9, "sample route(ADA)", gs_disable.get_map())
+    # route_viz.draw_route(17, 36, "Xcaret Amusement Park", gs.get_map())
+    # route_viz.draw_route(17, 36, "Xcaret Amusement Park", gs_disable.get_map())
