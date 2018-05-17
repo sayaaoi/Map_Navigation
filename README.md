@@ -22,10 +22,12 @@ instructions with total distance.
 >   - Visualize the route on the map 
 > 2. **Know detailed information about a specific location**
 > 3. **Find all attractions that are suitable for disabled people**
-> 4. **Find the nearest bathroom**
-> 5. **Find the nearest food place** 
-> 6. **Quit the program**
-> 7. **Start another navigation query, which defaults to starting at the last end point.**
+> 4. **Find whether a given location is suitable for disabled people**
+> 5. **Find all attractions that are open at a given time**
+> 6. **Find the nearest bathroom**
+> 7. **Find the nearest food place** 
+> 8. **Quit the program**
+> 9. **Start another navigation query, which defaults to starting at the last end point.**
 
 ## Visualization
 ### Full map 
