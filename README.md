@@ -1,4 +1,5 @@
 # Map Navigation
+![full map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/full%20map%20example.png 'Sample full map of Xcaret Amusement Park')
 
 ## Overview 
 This program can help people digitize and visualize the map of a large museum, zoo, or amusement park. 
