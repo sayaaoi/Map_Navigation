@@ -21,10 +21,11 @@ o Ask users whether they want to:<br>
 instructions with total distance.
 >   - Visualize the route on the map 
 > 2. **Know detailed information about a specific location**
-> 3. **Find the nearest bathroom**
-> 4. **Find the nearest food place** 
-> 5. **Quit the program**
-> 6. **Start another navigation query, which defaults to starting at the last end point.**
+> 3. **Find all attractions that are suitable for disabled people**
+> 4. **Find the nearest bathroom**
+> 5. **Find the nearest food place** 
+> 6. **Quit the program**
+> 7. **Start another navigation query, which defaults to starting at the last end point.**
 
 ### Visualization
 #### Full map 
@@ -53,29 +54,46 @@ Put [data](data) along with [Navigation program](Navigation.py), [Main program](
 and run [Main program](Main.py). Then follow the instructions in console. <br>
 
 In order to create a map on your own, you need to provide two csv files. One is for node information, and the other is for edge information. <br>
+If you only want to see the example, you can just run the program without worrying about the following requirements. 
 
 **Requirements for node file:**
 - It must be .csv file
-- The first row must contain 
+- The first row must contain <br>
+
   ```
-     *The following column name could vary but have to the first of all column names:*
+     *The following column name could vary but have to be at the first of all column names:*
      'location label' (could be any data type; it will appear on nodes in the map)
      
      *The following column names have to be in the file. The order doesn't matter:*
      'name'        
      'disabled_accessibility'
-     'open_time'
-     'close_time'	
-     'avg_wait_time'
-     'has_bathroom'
-     'has_food'	
+     'open_time': example format (9AM); hour:[0,12], minute:[0,59]; have to include 'AM' or 'PM'
+     'close_time': same as 'open_time'
+     'avg_wait_time': has to be number
+     'has_bathroom': value should be 1 or 0
+     'has_food': value should be 1 or 0
      'fee'	       
      'type'        
-     'x_coord'	
-     'y_coord'   
+     'x_coord': has to be integer
+     'y_coord': has to be integer
 
   ```
-  
+ **Requirements for edge file:**
+ - It must be .csv file
+ - The first row must contain<br>
+ 
+   ```
+   *The following column name could vary but have to be at the first, second and fifth of all column names (order matters):*
+   'start_id'	
+   'end_id'	
+   'ADA'
+   
+   *The following column names have to be in the file. The order doesn't matter:*
+   'distance': has to be number	
+   'type'
+   'direction': must be one of 'N', 'S','W','E','SE','SW','NE','NW'
+
+   ```
 
 
 ## All Sources Used:
