@@ -27,13 +27,13 @@ instructions with total distance.
 > 6. **Quit the program**
 > 7. **Start another navigation query, which defaults to starting at the last end point.**
 
-### Visualization
-#### Full map 
+## Visualization
+### Full map 
 Once the user chooses the map type (either ADA map or non-ADA one) the user will be given an image of the map with all attractions listed along with their numbers in 
 upper left side of the map. Each attraction(node) will have different color based on its type. For non-ADA map, it will also show water route(edge) in blue color. None of the ADA 
 route is water. One example of non-ADA map is showed on top of this page. 
 
-#### Route map
+### Route map
 The program will visualize the shortest path based on distance between two locations. 
 
 Let's take the example of Xcaret Amusement Park, we want to know the path from node 17 to node 36. The first image is the path for people who don't have 
