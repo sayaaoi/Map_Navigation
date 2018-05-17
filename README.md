@@ -18,6 +18,18 @@ instructions with total distance.<br>
 o Then it should allow the user to quit or enter another navigation query, which defaults
 to starting at the last end point.
 
+### Visualization
+#### Full map 
+
+#### Route map
+For example, we want to know the path from node 17 to node 36. The first image is the path for people who don't need 
+handicapped-accessible requirement. The second image is the path for people have handicapped-accessible requirement. 
+
+![route_map1](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/route_map1.png 'Non-ADA path') 
+
+![route_map2](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/route_map2.png 'ADA path')
+
+
 ## Instructions on how to use the program:
 
 
