@@ -91,7 +91,7 @@ If you only want to see the example, you can just run the program without worryi
    'ADA'
    
    *The following column names have to be in the file. The order doesn't matter:*
-   'distance': has to be number	
+   'distance': actual miles * 1000 (due to distance scale in the program)
    'type'
    'direction': must be one of 'N', 'S','W','E','SE','SW','NE','NW'
 
