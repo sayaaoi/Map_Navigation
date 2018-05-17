@@ -359,7 +359,7 @@ class Map:
                 direction = self.get_direction(paths[i - 1][0], path[0])
                 if i == len(paths) - 1:
                     print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0], path[1]))
-                    print("The total distance is: ", nx.dijkstra_path_length(self.get_map(), start, end), "miles")
+                    print("The total distance is: ", nx.dijkstra_path_length(self.get_map(), start, end, weight='distance'), "miles")
                 else:
                     print("Then, go {0} to {2}({1})".format(direction, path[0], path[1]))
 
@@ -397,8 +397,8 @@ class Map:
             dist = sys.maxsize
             attr_num = 0
             for food in [idx for idx in self._map.nodes() if self._map.nodes[idx]['has_food'] == 1]:
-                if dist > nx.dijkstra_path_length(self._map, cur_location, food):
-                    dist = nx.dijkstra_path_length(self._map, cur_location, food)
+                if dist > nx.dijkstra_path_length(self._map, cur_location, food, weight='distance'):
+                    dist = nx.dijkstra_path_length(self._map, cur_location, food, weight='distance')
                     attr_num = food
             print("The nearest location that sells food is: ")
             return self.get_node_name(attr_num) + "(" + str(attr_num) + ")"
@@ -466,7 +466,7 @@ class Map:
 if __name__ == "__main__":
     # Load data
     gs = Map("data/node_list_new.csv", "data/edge_list_new.csv", False)
-    gs_disable = Map("data/node_list_new.csv", "data/edge_list_new.csv", True)
+    # gs_disable = Map("data/node_list_new.csv", "data/edge_list_new.csv", True)
     gs.print_shortest_route(17, 36)
 
     # Draw full map
