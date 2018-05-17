@@ -359,7 +359,7 @@ class Map:
                 direction = self.get_direction(paths[i - 1][0], path[0])
                 if i == len(paths) - 1:
                     print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0], path[1]))
-                    print("The total distance is: ", nx.dijkstra_path_length(self.get_map(), start, end, weight='distance'), "miles")
+                    print("The total distance is: ", round(nx.dijkstra_path_length(self.get_map(), start, end, weight='distance')/1000, 2), "miles")
                 else:
                     print("Then, go {0} to {2}({1})".format(direction, path[0], path[1]))
 
@@ -467,7 +467,7 @@ if __name__ == "__main__":
     # Load data
     gs = Map("data/node_list_new.csv", "data/edge_list_new.csv", False)
     # gs_disable = Map("data/node_list_new.csv", "data/edge_list_new.csv", True)
-    gs.print_shortest_route(17, 36)
+    gs.print_shortest_route(17, 18)
 
     # Draw full map
     # gs.draw_map("Sample map")
