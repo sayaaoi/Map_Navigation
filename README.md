@@ -85,7 +85,7 @@ If you only want to see the example, you can just run the program without worryi
  - The first row must contain<br>
  
    ```
-   *The following column name could vary but have to be at the first, second and fifth of all column names (order matters):*
+   *The following column names have to be the same and have to be at the first, second and fifth of all column names (order matters):*
    'start_id'	
    'end_id'	
    'ADA'
