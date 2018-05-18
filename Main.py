@@ -11,33 +11,6 @@ black_bold = "\033[1;30m"
 endc = '\033[0m'
 
 
-# file path validation
-# def map_choice():
-#     while True:
-#         prompt = input("Do you want to see an example of a map navigation or create one on your own? "
-#                        "\n1. Example  \n2. Create a new one \n3. Quit\n")
-#         if prompt == "1":
-#             site_name = "Xcaret Amusement Park"
-#             node_file, edge_file = "data/node_list_new.csv", "data/edge_list_new.csv"
-#             break
-#         elif prompt == "2":
-#             site_name = input("\nPlease type in the name of the place your map is designed for: \n")
-#             while True:
-#                 try:
-#                     new_map = new_map()
-#                     Map(new_map[0], new_map[1], False)
-#                 except:
-#                     print(red_col + "There are errors in files. Please check and try again!" + endc)
-#                     continue
-#                 else:
-#                     map_img = Map(new_map[0], new_map[1], False)
-#                     break
-#         elif prompt == "3":
-#             exit()
-#         else:
-#             print(red_col + "Invalid input, you must type 1, 2 or 3" + endc)
-#     return site_name, node_file, edge_file
-
 def new_map():
     while True:
         node_file_name = input("Please indicate the file path of node list: ")
@@ -180,103 +153,115 @@ def find_place(food_bathroom: str, map: Map):
 
 
 def user_interface():
+    new_query = True
     while True:
-        prompt = input("Do you want to see an example of a map navigation or create one on your own? "
-                       "\n1. Example  \n2. Create a new one \n3. Quit\n")
-        if prompt == "1":
-            site_name = "Xcaret Amusement Park"
-            node_file, edge_file = "data/node_list_new.csv", "data/edge_list_new.csv"
-            break
-        elif prompt == "2":
-            site_name = input("\nPlease type in the name of the place your map is designed for: \n")
-            node_file, edge_file = new_map()
-            break
-        elif prompt == "3":
-            exit()
+        if new_query is True:
+            while True:
+                prompt = input("Do you want to see an example of a map navigation or create one on your own? "
+                               "\n1. Example  \n2. Create a new one \n3. Quit\n")
+                if prompt == "1":
+                    site_name = "Xcaret Amusement Park"
+                    node_file, edge_file = "data/node_list_new.csv", "data/edge_list_new.csv"
+                    break
+                elif prompt == "2":
+                    site_name = input("\nPlease type in the name of the place your map is designed for: \n")
+                    node_file, edge_file = new_map()
+                    break
+                elif prompt == "3":
+                    exit()
+                else:
+                    print(red_col + "Invalid input, you must type 1, 2 or 3" + endc)
+                    continue
+
+            print(blue_bold + """=========================== Welcome to %s ============================
+                                -------- Attraction names and ID numbers -------- \n""" % site_name + endc)
+
+            # print all attractions alphabetically
+            temp_map = Map(node_file, edge_file, False)
+            print(temp_map.print_all_attractions())
+            map_used = map_type(node_file, edge_file, site_name)
+
+            node_track = []
+            while True:
+                msg = input("\nWhat would you like to know about " + site_name + "? "
+                            + black_bold + "\n1. Route from one location to another. "
+                            "\n2. Detailed information about one location"
+                            "\n3. All attractions that are suitable for disabled people "
+                            "\n4. Whether a given location is suitable for disabled people "
+                            "\n5. All attractions that are open at a given time "
+                            "\n6. The nearest bathroom "
+                            "\n7. the nearest foodplace "
+                            "\n8. Quit the program"
+                            "\n9. Start another navigation query \n" + endc)
+                if msg == "1":
+                    new_query = False
+                    node_to_node(map_used, node_track, site_name)
+                elif msg == "2":
+                    new_query = False
+                    node_info(map_used)
+                elif msg == "3":
+                    new_query = False
+                    print(map_used.all_disabled_friendly_node())
+                elif msg == "4":
+                    while True:
+                        try:
+                            node_num = eval(input("Please type in the location number: \n"))
+                        except:
+                            print(red_col + "Invalid input. Please try again!" + endc)
+                            continue
+                        if node_num not in map_used.get_map().nodes:
+                            print(red_col + "Invalid location number. Please type again." + endc)
+                        else:
+                            print(map_used.disabled_friendly_node(node_num))
+                            new_query = False
+                            break
+                elif msg == "5":
+                    while True:
+                        time = input("Please type in the time you are interested: \n")
+                        try:
+                            temp = map_used.attractions_open(time)
+                        except:
+                            print("Invalid input. Please try again!")
+                            continue
+                        if temp == "Sorry the range of minute is [0,60] and the range of hour is [0,12]":
+                            print("Sorry the range of minute is [0,60] and the range of hour is [0,12]. Please try again!")
+                        else:
+                            new_query = False
+                            break
+                elif msg == "6":
+                    while True:
+                        try:
+                            cur_loc = eval(input("Please type in your current location number: \n"))
+                        except:
+                            print(red_col + "Invalid input. Please try again!" + endc)
+                            continue
+                        if cur_loc not in map_used.get_map().nodes:
+                            print(red_col + "Invalid location number. Please type again." + endc)
+                        else:
+                            print(map_used.find_nearest_bathroom(cur_loc))
+                            new_query = False
+                            break
+                elif msg == "7":
+                    while True:
+                        try:
+                            cur_loc = eval(input("Please type in your current location number: \n"))
+                        except:
+                            print(red_col + "Invalid input. Please try again!" + endc)
+                            continue
+                        if cur_loc not in map_used.get_map().nodes:
+                            print(red_col + "Invalid location number. Please type again." + endc)
+                        else:
+                            print(map_used.find_nearest_foodplace(cur_loc))
+                            new_query = False
+                            break
+                elif msg == "8":
+                    exit()
+                elif msg =="9":
+                    break
+                else:
+                    print(red_col + "Invalid input. Please try again!" + endc)
         else:
-            print(red_col + "Invalid input, you must type 1, 2 or 3" + endc)
-            continue
-
-    print(blue_bold + """=========================== Welcome to %s ============================
-                        -------- Attraction names and ID numbers -------- \n""" % site_name + endc)
-
-    # print all attractions alphabetically
-    temp_map = Map(node_file, edge_file, False)
-    print(temp_map.print_all_attractions())
-    map_used = map_type(node_file, edge_file, site_name)
-
-    node_track = []
-    while True:
-        msg = input("\nWhat would you like to know about " + site_name + "? "
-                    + black_bold + "\n1. Route from one location to another. "
-                    "\n2. Detailed information about one location"
-                    "\n3. All attractions that are suitable for disabled people "
-                    "\n4. Whether a given location is suitable for disabled people "
-                    "\n5. All attractions that are open at a given time "
-                    "\n6. The nearest bathroom "
-                    "\n7. the nearest foodplace "
-                    "\n8. Quit the program"
-                    "\n9. Start another navigation query \n" + endc)
-        if msg == "1":
-            node_to_node(map_used, node_track, site_name)
-        elif msg == "2":
-            node_info(map_used)
-        elif msg == "3":
-            print(map_used.all_disabled_friendly_node())
-        elif msg == "4":
-            while True:
-                try:
-                    node_num = eval(input("Please type in the location number: \n"))
-                except:
-                    print(red_col + "Invalid input. Please try again!" + endc)
-                    continue
-                if node_num not in map_used.get_map().nodes:
-                    print(red_col + "Invalid location number. Please type again." + endc)
-                else:
-                    print(map_used.disabled_friendly_node(node_num))
-                    break
-        elif msg == "5":
-            while True:
-                time = input("Please type in the time you are interested: \n")
-                try:
-                    temp = map_used.attractions_open(time)
-                except:
-                    print("Invalid input. Please try again!")
-                    continue
-                if temp == "Sorry the range of minute is [0,60] and the range of hour is [0,12]":
-                    print("Sorry the range of minute is [0,60] and the range of hour is [0,12]. Please try again!")
-                else:
-                    break
-        elif msg == "6":
-            while True:
-                try:
-                    cur_loc = eval(input("Please type in your current location number: \n"))
-                except:
-                    print(red_col + "Invalid input. Please try again!" + endc)
-                    continue
-                if cur_loc not in map_used.get_map().nodes:
-                    print(red_col + "Invalid location number. Please type again." + endc)
-                else:
-                    print(map_used.find_nearest_bathroom(cur_loc))
-                    break
-        elif msg == "7":
-            while True:
-                try:
-                    cur_loc = eval(input("Please type in your current location number: \n"))
-                except:
-                    print(red_col + "Invalid input. Please try again!" + endc)
-                    continue
-                if cur_loc not in map_used.get_map().nodes:
-                    print(red_col + "Invalid location number. Please type again." + endc)
-                else:
-                    print(map_used.find_nearest_foodplace(cur_loc))
-                    break
-        elif msg == "8":
-            exit()
-        elif msg =="9":
-            pass
-        else:
-            print(red_col + "Invalid input. Please try again!" + endc)
+            break
 
 
 if __name__ == "__main__":
