@@ -47,10 +47,9 @@ True
 Traceback (most recent call last):
 ...
 NameError: name 'dfd' is not defined
+
 >>> gs_disable.disabled_friendly_node(89)
-Traceback (most recent call last):
-...
-ValueError: Unexpected location number!
+
 
 >>> gs.attractions_open('11PM')
 'Sorry, no attraction is open.'
@@ -94,9 +93,7 @@ The nearest location that sells food is:
 >>> gs_disable.find_nearest_foodplace(9)
 'Your current location has a place for food.'
 >>> gs.find_nearest_foodplace(100)
-Traceback (most recent call last):
-...
-ValueError: Unexpected location number!
+
 
 >>> gs_disable.get_nodes_attributes(9) # doctest: +NORMALIZE_WHITESPACE
 Mayan Village is a place of Culture.
@@ -253,8 +250,6 @@ class Map:
         """
         if node in self._map.nodes:
             return self._map.nodes[node]['disabled_accessibility'] == 1
-        else:
-            raise ValueError("Unexpected location number!")
 
     def all_disabled_friendly_node(self):
         """
@@ -381,8 +376,6 @@ class Map:
                     attr_num = bathroom
             print("The nearest location with bathroom is: ")
             return self.get_node_name(attr_num) + "(" + str(attr_num) + ")"
-        else:
-            raise ValueError("Unexpected location number!")
 
     def find_nearest_foodplace(self, cur_location) ->str:
         """
@@ -402,8 +395,6 @@ class Map:
                     attr_num = food
             print("The nearest location that sells food is: ")
             return self.get_node_name(attr_num) + "(" + str(attr_num) + ")"
-        else:
-            raise ValueError("Unexpected location number!")
 
     def draw_map(self, graph_name: str):
         """
