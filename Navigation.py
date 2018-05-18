@@ -151,13 +151,13 @@ class Map:
         edge_list = pd.read_csv(edge_file)
         for idx, edge_attr in edge_list.iterrows():
             if disable is False:
-                graph.add_edge(edge_attr[0],edge_attr[1])
+                graph.add_edge(edge_attr['start_id'],edge_attr['end_id'])
             if disable is True and edge_attr[4] == 1:
-                graph.add_edge(edge_attr[0],edge_attr[1])
+                graph.add_edge(edge_attr['start_id'],edge_attr['end_id'])
             attr = {}
             for index in range(2, len(list(edge_list.columns))):
                 attr[list(edge_list.columns)[index]] = edge_attr[index]
-            edge_attrs[(edge_attr[0], edge_attr[1])] = attr
+            edge_attrs[(edge_attr['start_id'], edge_attr['end_id'])] = attr
         # add edge attributes
         nx.set_edge_attributes(graph, edge_attrs)
         return graph
