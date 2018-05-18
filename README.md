@@ -1,5 +1,5 @@
 # Map Navigation
-![full map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/full%20map%20example.png 'Sample full map of Xcaret Amusement Park')
+
 
 ## Overview 
 This program can help people know information about a large museum, zoo, or amusement park, and visualize the map of it. 
@@ -15,7 +15,7 @@ o Let users choose to see an example of navigation or create one on their own. <
 o Alphabetically list all the attractions with location numbers. <br>
 o Ask whether the user requires a handicapped-accessible route, and then show a full map.<br>
 o Ask users whether they want to:<br>
-> 1. **Know how to get to the next location**
+> 1. **Know how to get to the next location(defaults to starting at the last end point)**
 >   - Ask the user to enter their starting point and the next attraction number they want to visit.
 >   - Then the program will calculate a shortest path and print clear turn-by-turn navigation
 instructions with total distance.
@@ -27,9 +27,15 @@ instructions with total distance.
 > 6. **Find the nearest bathroom**
 > 7. **Find the nearest food place** 
 > 8. **Quit the program**
-> 9. **Start another navigation query, which defaults to starting at the last end point.**
+> 9. **Start another navigation query.**
+
+### Demo
+![output flow](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output_flow1.png)
+![full map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/full%20map%20example.png 'Sample full map of Xcaret Amusement Park') <br>
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/route_map.png)
 
 ## Visualization
+
 ### Full map 
 Once the user chooses the map type (either ADA map or non-ADA one) the user will be given an image of the map with all attractions listed along with their numbers in 
 upper left side of the map. Each attraction(node) will have different color based on its type. For non-ADA map, it will also show water route(edge) in blue color. None of the ADA 
