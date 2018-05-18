@@ -17,10 +17,10 @@ def new_map():
         try:
             node_file.resolve(strict=True)
         except FileNotFoundError:
-            print("File path doesn't exit. Please try again.\n")
+            print(red_bold + "File path doesn't exit. Please try again.\n" + endc)
             continue
         if not node_file_name[-4:] == ".csv":
-            print("Node file must be in .csv format. Please try again. \n")
+            print(red_bold + "Node file must be in .csv format. Please try again. \n" + endc)
         else:
             break
 
@@ -30,13 +30,14 @@ def new_map():
         try:
             edge_file.resolve(strict=True)
         except FileNotFoundError:
-            print("File path doesn't exit. Please try again.\n")
+            print(red_bold + "File path doesn't exit. Please try again.\n" + endc)
             continue
         if not edge_file_name[-4:] == ".csv":
-            print("Edge file must be in .csv format. Please try again. \n")
+            print(red_bold + "Edge file must be in .csv format. Please try again. \n" + endc)
         else:
             break
     return node_file, edge_file
+
 
 # file path validation
 while True:
@@ -52,7 +53,7 @@ while True:
                 new_map = new_map()
                 Map(new_map[0], new_map[1], False)
             except:
-                print("There are errors in files. Please check and try again!")
+                print(red_col + "There are errors in files. Please check and try again!" + endc)
                 continue
             else:
                 map_img = Map(new_map[0], new_map[1], False)
@@ -97,7 +98,7 @@ def node_to_node(map: Map):
             try:
                 src = eval(input("Please first type in the number of the starting location: \n"))
             except NameError as err:
-                print(err, "Please try again!")
+                print(red_col + str(err), "Please try again!" + endc)
                 continue
             except SyntaxError as error:
                 print(red_col + str(error) + " Please try again" + endc)
@@ -112,7 +113,7 @@ def node_to_node(map: Map):
             try:
                 end = eval(input("Please then type in the number of the destination location: \n"))
             except NameError as err:
-                print(err, "Please try again!")
+                print(red_col + str(err), "Please try again!" + endc)
                 continue
             except SyntaxError as error:
                 print(red_col + str(error) + " Please try again" + endc)
@@ -195,13 +196,14 @@ def user_interface():
     map_type(map_img)
 
     while True:
-        msg = input("\nWhat would you like to know about? \n1. Route from one location to another. "
+        msg = input("\nWhat would you like to know about? "
+                    + black_bold + "\n1. Route from one location to another. "
                     "\n2. Detailed information about one location\
                     \n3. All attractions that are suitable for disabled people "
                     "\n4. Whether a given location is suitable for disabled people \
                     \n5. All attractions that are open at a given time \n6. The nearest bathroom "
                     "\n7. the nearest foodplace \n8. Quit the program\
-                    \n9. Start another navigation query")
+                    \n9. Start another navigation query"  + endc)
         if msg == "1":
             node_to_node(map_img)
         elif msg == "2":
@@ -213,7 +215,8 @@ def user_interface():
                 try:
                     node_num = eval(input("Please type in the location number: \n"))
                 except:
-                    print("Invalid input. Please try again!")
+                    print(red_col + "Invalid input. Please try again!" + endc)
+                    print(red_col + "Invalid input. Please try again!" + endc)
                     continue
                 else:
                     map_img.disabled_friendly_node(node_num)
@@ -226,7 +229,7 @@ def user_interface():
                 try:
                     cur_loc = eval(input("Please type in your current location number: \n"))
                 except:
-                    print("Invalid input. Please try again!")
+                    print(red_col + "Invalid input. Please try again!" + endc)
                     continue
                 else:
                     map_img.find_nearest_bathroom(cur_loc)
@@ -236,7 +239,7 @@ def user_interface():
                 try:
                     cur_loc = eval(input("Please type in your current location number: \n"))
                 except:
-                    print("Invalid input. Please try again!")
+                    print(red_col + "Invalid input. Please try again!" + endc)
                     continue
                 else:
                     map_img.find_nearest_foodplace(cur_loc)
@@ -246,7 +249,7 @@ def user_interface():
         elif msg =="9":
             pass
         else:
-            print("Invalid input. Please try again!")
+            print(red_col + "Invalid input. Please try again!" + endc)
 
 
 if __name__ == "__main__":
