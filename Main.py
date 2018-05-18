@@ -10,6 +10,34 @@ red_bold = "\033[1;31m"
 black_bold = "\033[1;30m"
 endc = '\033[0m'
 
+
+# file path validation
+# def map_choice():
+#     while True:
+#         prompt = input("Do you want to see an example of a map navigation or create one on your own? "
+#                        "\n1. Example  \n2. Create a new one \n3. Quit\n")
+#         if prompt == "1":
+#             site_name = "Xcaret Amusement Park"
+#             node_file, edge_file = "data/node_list_new.csv", "data/edge_list_new.csv"
+#             break
+#         elif prompt == "2":
+#             site_name = input("\nPlease type in the name of the place your map is designed for: \n")
+#             while True:
+#                 try:
+#                     new_map = new_map()
+#                     Map(new_map[0], new_map[1], False)
+#                 except:
+#                     print(red_col + "There are errors in files. Please check and try again!" + endc)
+#                     continue
+#                 else:
+#                     map_img = Map(new_map[0], new_map[1], False)
+#                     break
+#         elif prompt == "3":
+#             exit()
+#         else:
+#             print(red_col + "Invalid input, you must type 1, 2 or 3" + endc)
+#     return site_name, node_file, edge_file
+
 def new_map():
     while True:
         node_file_name = input("Please indicate the file path of node list: ")
@@ -39,55 +67,21 @@ def new_map():
     return node_file, edge_file
 
 
-# file path validation
-while True:
-    prompt = input("Do you want to see an example of a map navigation or create one on your own? \n1. Example  \n2. Create a new one \n3. Quit\n")
-    if prompt == "1":
-        site_name = "Xcaret Amusement Park"
-        node_file, edge_file = "data/node_list_new.csv", "data/edge_list_new.csv"
-        break
-    elif prompt == "2":
-        site_name = input("\nPlease type in the name of the place your map is designed for: \n")
-        while True:
-            try:
-                new_map = new_map()
-                Map(new_map[0], new_map[1], False)
-            except:
-                print(red_col + "There are errors in files. Please check and try again!" + endc)
-                continue
-            else:
-                map_img = Map(new_map[0], new_map[1], False)
-                break
-    elif prompt == "3":
-        exit()
-    else:
-        print(red_col + "Invalid input, you must type 1, 2 or 3" + endc)
-
-
 def node_info(map: Map):
     while True:
-        node_attr_q = input("\nWould you like to know some information about a specific attraction? \n1.Yes\n2.No\n3.Quit\n")
-        if node_attr_q == "1":
-            while True:
-                try:
-                    which_node = eval(input("Please type in the attraction number: "))
-                except NameError as err:
-                    print(red_col + str(err), "Please try again!" + endc)
-                    continue
-                except SyntaxError as error:
-                    print(red_col + str(error) + " Please try again" + endc)
-                    continue
-                if which_node not in map.get_map().nodes:
-                    print(red_col + "Wrong attraction number. Please type again." + endc)
-                else:
-                    map.get_nodes_attributes(which_node)
-                    break
-        elif node_attr_q == "2":
-            break
-        elif node_attr_q == "3":
-            exit()
+        try:
+            which_node = eval(input("Please type in the attraction number: "))
+        except NameError as err:
+            print(red_col + str(err), "Please try again!" + endc)
+            continue
+        except SyntaxError as error:
+            print(red_col + str(error) + " Please try again" + endc)
+            continue
+        if which_node not in map.get_map().nodes:
+            print(red_col + "Wrong attraction number. Please type again." + endc)
         else:
-            print(red_col + "Invalid input. Please try again!" + endc)
+            map.get_nodes_attributes(which_node)
+            break
 
 
 def node_to_node(map: Map):
@@ -153,20 +147,24 @@ def node_to_node(map: Map):
         break
 
 
-def map_type(map: Map):
+def map_type(n_file, e_file, name):
     while True:
         ada = input("Would you need a handicapped-accessible route? \n1.Yes\n2.No\n")
         if ada == "1":
-            map = Map(node_file, edge_file, True)
-            print("This is %s map. "% site_name)
-            map.draw_map(site_name)
-            break
+            map = Map(n_file, e_file, True)
+            print("This is %s map. "% name)
+            map.draw_map(name)
+            #break
+            return map
         elif ada == "2":
-            print("This is %s map. " % site_name)
-            map.draw_map(site_name)
-            break
+            map = Map(n_file, e_file, False)
+            print("This is %s map. " % name)
+            map.draw_map(name)
+            #break
+            return map
         else:
             print(red_col + "Invalid input, you must type 1 or 2" + endc)
+            #continue  # code works w/ or w/o it
 
 
 def find_place(food_bathroom: str, map: Map):
@@ -188,28 +186,46 @@ def find_place(food_bathroom: str, map: Map):
 
 
 def user_interface():
-    print(blue_bold + """=========================== Welcome to %s ============================
-                    -------- Attraction names and ID numbers -------- \n""" % site_name + endc)
-    # print all attractions alphabetically
-    print(map_img.print_all_attractions())
+    while True:
+        prompt = input("Do you want to see an example of a map navigation or create one on your own? "
+                       "\n1. Example  \n2. Create a new one \n3. Quit\n")
+        if prompt == "1":
+            site_name = "Xcaret Amusement Park"
+            node_file, edge_file = "data/node_list_new.csv", "data/edge_list_new.csv"
+            break
+        elif prompt == "2":
+            site_name = input("\nPlease type in the name of the place your map is designed for: \n")
+            node_file, edge_file = new_map()
+            break
+        elif prompt == "3":
+            exit()
+        else:
+            print(red_col + "Invalid input, you must type 1, 2 or 3" + endc)
+            continue
 
-    map_type(map_img)
+    print(blue_bold + """=========================== Welcome to %s ============================
+                        -------- Attraction names and ID numbers -------- \n""" % site_name + endc)
+
+    # print all attractions alphabetically
+    temp_map = Map(node_file, edge_file, False)
+    print(temp_map.print_all_attractions())
+    map_used = map_type(node_file, edge_file, site_name)
 
     while True:
-        msg = input("\nWhat would you like to know about? "
+        msg = input("\nWhat would you like to know about " + site_name + "? "
                     + black_bold + "\n1. Route from one location to another. "
                     "\n2. Detailed information about one location\
                     \n3. All attractions that are suitable for disabled people "
                     "\n4. Whether a given location is suitable for disabled people \
                     \n5. All attractions that are open at a given time \n6. The nearest bathroom "
                     "\n7. the nearest foodplace \n8. Quit the program\
-                    \n9. Start another navigation query"  + endc)
+                    \n9. Start another navigation query \n"  + endc)
         if msg == "1":
-            node_to_node(map_img)
+            node_to_node(map_used)
         elif msg == "2":
-            node_info(map_img)
+            node_info(map_used)
         elif msg == "3":
-            map_img.all_disabled_friendly_node()
+            map_used.all_disabled_friendly_node()
         elif msg == "4":
             while True:
                 try:
@@ -219,11 +235,11 @@ def user_interface():
                     print(red_col + "Invalid input. Please try again!" + endc)
                     continue
                 else:
-                    map_img.disabled_friendly_node(node_num)
+                    map_used.disabled_friendly_node(node_num)
                     break
         elif msg == "5":
             time = input("Please type in the time you are interested: \n")
-            map_img.attractions_open(time)
+            map_used.attractions_open(time)
         elif msg == "6":
             while True:
                 try:
@@ -232,7 +248,7 @@ def user_interface():
                     print(red_col + "Invalid input. Please try again!" + endc)
                     continue
                 else:
-                    map_img.find_nearest_bathroom(cur_loc)
+                    map_used.find_nearest_bathroom(cur_loc)
                     break
         elif msg == "7":
             while True:
@@ -242,7 +258,7 @@ def user_interface():
                     print(red_col + "Invalid input. Please try again!" + endc)
                     continue
                 else:
-                    map_img.find_nearest_foodplace(cur_loc)
+                    map_used.find_nearest_foodplace(cur_loc)
                     break
         elif msg == "8":
             exit()
@@ -253,6 +269,6 @@ def user_interface():
 
 
 if __name__ == "__main__":
-    #user_interface()
-    print(new_map())
+    user_interface()
+    #print(new_map())
 
