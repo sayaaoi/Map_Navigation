@@ -41,6 +41,10 @@ def new_map():
 
 
 def node_info(map: Map):
+    """
+    Useful information about the location
+
+    """
     while True:
         try:
             which_node = eval(input("Please type in the attraction number: "))
@@ -131,7 +135,6 @@ def map_type(n_file, e_file, name):
             return map
         else:
             print(red_col + "Invalid input, you must type 1 or 2" + endc)
-            #continue  # code works w/ or w/o it
 
 
 def find_place(food_bathroom: str, map: Map):
@@ -157,15 +160,23 @@ def user_interface():
     while True:
         if new_query is True:
             while True:
-                prompt = input("Do you want to see an example of a map navigation or create one on your own? "
-                               "\n1. Example  \n2. Create a new one \n3. Quit\n")
+                prompt = input("Do you want to see an example of a map navigation or create one on your own?"
+                               + blue_col + "\n1. Example  \n2. Create a new one \n3. Quit\n" + endc)
                 if prompt == "1":
                     site_name = "Xcaret Amusement Park"
                     node_file, edge_file = "data/node_list_new.csv", "data/edge_list_new.csv"
                     break
                 elif prompt == "2":
                     site_name = input("\nPlease type in the name of the place your map is designed for: \n")
-                    node_file, edge_file = new_map()
+                    while True:
+                        node_file, edge_file = new_map()
+                        try:
+                            Map(node_file, edge_file, False)
+                        except:
+                            print(red_bold + "Files don't meet the requirement. Please check and try again!" + endc)
+                            continue
+                        else:
+                            break
                     break
                 elif prompt == "3":
                     exit()
@@ -194,13 +205,10 @@ def user_interface():
                             "\n8. Quit the program"
                             "\n9. Start another navigation query \n" + endc)
                 if msg == "1":
-                    new_query = False
                     node_to_node(map_used, node_track, site_name)
                 elif msg == "2":
-                    new_query = False
                     node_info(map_used)
                 elif msg == "3":
-                    new_query = False
                     print(map_used.all_disabled_friendly_node())
                 elif msg == "4":
                     while True:
@@ -213,7 +221,6 @@ def user_interface():
                             print(red_col + "Invalid location number. Please type again." + endc)
                         else:
                             print(map_used.disabled_friendly_node(node_num))
-                            new_query = False
                             break
                 elif msg == "5":
                     while True:
@@ -225,8 +232,9 @@ def user_interface():
                             continue
                         if temp == "Sorry the range of minute is [0,60] and the range of hour is [0,12]":
                             print("Sorry the range of minute is [0,60] and the range of hour is [0,12]. Please try again!")
+                        elif temp == "Sorry the time format is invalid.":
+                            print("Sorry the time format is invalid. Please try again!")
                         else:
-                            new_query = False
                             break
                 elif msg == "6":
                     while True:
@@ -239,7 +247,6 @@ def user_interface():
                             print(red_col + "Invalid location number. Please type again." + endc)
                         else:
                             print(map_used.find_nearest_bathroom(cur_loc))
-                            new_query = False
                             break
                 elif msg == "7":
                     while True:
@@ -252,11 +259,11 @@ def user_interface():
                             print(red_col + "Invalid location number. Please type again." + endc)
                         else:
                             print(map_used.find_nearest_foodplace(cur_loc))
-                            new_query = False
                             break
                 elif msg == "8":
                     exit()
-                elif msg =="9":
+                elif msg == "9":
+                    new_query = True
                     break
                 else:
                     print(red_col + "Invalid input. Please try again!" + endc)
