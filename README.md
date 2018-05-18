@@ -30,17 +30,35 @@ instructions with total distance.
 > 9. **Start another navigation query.**
 
 ### Demo
-![output flow](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output1.png)
+The following screenshots are outputs ran by this program: <br><br>
+
+![output flow](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output1.png)<br>
+
 ![full map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/full%20map%20example.png 'Sample full map of Xcaret Amusement Park') <br>
-![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output2.png)
-![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output3.png)
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output2.png)<br>
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output3.png)<br>
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/route_map.png) <br>
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output4.png) <br>
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output5.png) <br>
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output6.png)<br>
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output7.png) <br>
+
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output8.png) <br>
+
 
 ## Visualization
 
 ### Full map 
 Once the user chooses the map type (either ADA map or non-ADA one) the user will be given an image of the map with all attractions listed along with their numbers in 
 upper left side of the map. Each attraction(node) will have different color based on its type. For non-ADA map, it will also show water route(edge) in blue color. None of the ADA 
-route is water. One example of non-ADA map is showed on top of this page. 
+route is water. One example of non-ADA map is showed under Demo. 
 
 ### Route map
 The program will visualize the shortest path based on distance between two locations. 
