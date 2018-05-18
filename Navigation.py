@@ -52,7 +52,7 @@ NameError: name 'dfd' is not defined
 
 
 >>> gs.attractions_open('11PM')
-'Sorry, no attraction is open.'
+No attraction is open at this time.
 >>> gs_disable.attractions_open('34pm')
 'Sorry the time format is invalid.'
 >>> gs_disable.attractions_open('3333Pm')
