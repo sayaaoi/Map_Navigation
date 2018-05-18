@@ -299,7 +299,7 @@ class Map:
                             self.format_time(self._map.nodes[attraction]['open_time']):
                         open_attraction.append((attraction, self.get_node_name(attraction)))
                 if len(open_attraction) == 0:
-                    return "Sorry, no attraction is open."
+                    print("No attraction is open at this time.")
                 else:
                     return self.format_open_attractions(open_attraction)
         else:
