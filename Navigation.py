@@ -76,10 +76,11 @@ ValueError: Unexpected location number!
 >>> gs.shortest_path(17, 39)
 [(17, 'hello there'), (18, 'Natural Museum of Orchids & Bromeliads'), (39, 'Tropical Jungle Trail Exit')]
 
->>> gs.print_shortest_route(17, 39)
+>>> gs.print_shortest_route(17, 39) # doctest: +NORMALIZE_WHITESPACE
 From hello there(17)
 Then, go southwest to Natural Museum of Orchids & Bromeliads(18)
 Finally, go north to your destination: Tropical Jungle Trail Exit(39)
+The total distance is:  0.32 miles
 
 >>> gs_disable.find_nearest_bathroom(39) # doctest: +NORMALIZE_WHITESPACE
 The nearest location with bathroom is:
@@ -98,7 +99,7 @@ Traceback (most recent call last):
 ValueError: Unexpected location number!
 
 >>> gs_disable.get_nodes_attributes(9) # doctest: +NORMALIZE_WHITESPACE
-Mayan Villageis a place of Culture.
+Mayan Village is a place of Culture.
 It opens at 9am and closes at 7pm.
 The average waiting time is 5 minutes. The fare of this place is 0 dollar.
 This place doesn't have a bathroom.
@@ -117,7 +118,6 @@ import sys
 from datetime import datetime
 import random
 from matplotlib import colors as mcolors
-import Route_Visualization as route_viz
 
 
 class Map:
@@ -458,7 +458,6 @@ class Map:
         msg = msg[:-1]
         plt.text(-70, 500, msg, fontsize=12, bbox=dict(facecolor='aliceblue', alpha=0.5))
         plt.legend(loc="lower right", shadow=True, fontsize='xx-large', markerscale=0.7, fancybox=True, labelspacing=0.8)
-        # plt.savefig('map1.png', facecolor=fig.get_facecolor())
         plt.axis("off")
         return plt.show()
 
