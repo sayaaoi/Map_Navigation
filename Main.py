@@ -84,67 +84,62 @@ def node_info(map: Map):
             break
 
 
-def node_to_node(map: Map):
+def node_to_node(map: Map, node_track: list, site_name: str):
     while True:
-        node_track = []
-        print("\nLet me show you the shortest path from one location to another!")
-        while True:
-            try:
-                src = eval(input("Please first type in the number of the starting location: \n"))
-            except NameError as err:
-                print(red_col + str(err), "Please try again!" + endc)
-                continue
-            except SyntaxError as error:
-                print(red_col + str(error) + " Please try again" + endc)
-                continue
-            if src not in map.get_map().nodes:
-                print(red_col + "Wrong attraction number. Please type again." + endc)
-            else:
-                node_track.append(src)
-                break
+        if len(node_track) == 0:
+            print("\nLet me show you the shortest path from one location to another!")
+            while True:
+                try:
+                    src = eval(input("Please first type in the number of the starting location: \n"))
+                except NameError as err:
+                    print(red_col + str(err), "Please try again!" + endc)
+                    continue
+                except SyntaxError as error:
+                    print(red_col + str(error) + " Please try again" + endc)
+                    continue
+                if src not in map.get_map().nodes:
+                    print(red_col + "Wrong attraction number. Please type again." + endc)
+                else:
+                    node_track.append(src)
+                    break
 
-        while True:
-            try:
-                end = eval(input("Please then type in the number of the destination location: \n"))
-            except NameError as err:
-                print(red_col + str(err), "Please try again!" + endc)
-                continue
-            except SyntaxError as error:
-                print(red_col + str(error) + " Please try again" + endc)
-                continue
-            if end not in map.get_map().nodes:
-                print(red_col + "Wrong attraction number. Please type again." + endc)
-            else:
-                node_track.append(end)
-                break
-        map.print_shortest_route(src, end)
-        route_viz.draw_route(src, end, site_name, map.get_map())
-
-        while True:
-            msg = input("\nDo you want to go to the next place? \n1. Yes \n2. No, this is my destination.\n")
-            if msg == "1":
-                while True:
-                    try:
-                        next_node = eval(input("\nWhere do you want to go next?\n"))
-                    except NameError as err:
-                        print(red_col + str(err), "Please try again!" + endc)
-                        continue
-                    except SyntaxError as error:
-                        print(red_col + str(error) + " Please try again" + endc)
-                        continue
-                    if next_node not in map.get_map().nodes:
-                        print(red_col + "Wrong attraction number. Please type again." + endc)
-                        continue
-                    else:
-                        node_track.append(next_node)
-                        map.print_shortest_route(node_track[node_track.index(next_node) - 1], next_node)
-                        route_viz.draw_route(end, next_node, site_name, map.get_map())
-                        break
-            elif msg == "2":
-                break
-            else:
-                print(red_col + "Invalid input, you must type 1 or 2" + endc)
-        break
+            while True:
+                try:
+                    end = eval(input("Please then type in the number of the destination location: \n"))
+                except NameError as err:
+                    print(red_col + str(err), "Please try again!" + endc)
+                    continue
+                except SyntaxError as error:
+                    print(red_col + str(error) + " Please try again" + endc)
+                    continue
+                if end not in map.get_map().nodes:
+                    print(red_col + "Wrong attraction number. Please type again." + endc)
+                else:
+                    node_track.append(end)
+                    break
+            map.print_shortest_route(src, end)
+            route_viz.draw_route(src, end, site_name, map.get_map())
+            break
+        else:
+            while True:
+                try:
+                    print("\nYour last location is " + map.get_node_name(node_track[-1]) +
+                          "(" + str(node_track[-1]) + ")" + ".")
+                    next_node = eval(input("Where do you want to go next? Please type in location number: \n"))
+                except NameError as err:
+                    print(red_col + str(err), "Please try again!" + endc)
+                    continue
+                except SyntaxError as error:
+                    print(red_col + str(error) + " Please try again" + endc)
+                    continue
+                if next_node not in map.get_map().nodes:
+                    print(red_col + "Wrong attraction number. Please type again." + endc)
+                else:
+                    node_track.append(next_node)
+                    map.print_shortest_route(node_track[node_track.index(next_node) - 1], next_node)
+                    route_viz.draw_route(node_track[node_track.index(next_node) - 1], next_node, site_name, map.get_map())
+                    break
+            break
 
 
 def map_type(n_file, e_file, name):
@@ -154,13 +149,11 @@ def map_type(n_file, e_file, name):
             map = Map(n_file, e_file, True)
             print("This is %s map. "% name)
             map.draw_map(name)
-            #break
             return map
         elif ada == "2":
             map = Map(n_file, e_file, False)
             print("This is %s map. " % name)
             map.draw_map(name)
-            #break
             return map
         else:
             print(red_col + "Invalid input, you must type 1 or 2" + endc)
@@ -211,6 +204,7 @@ def user_interface():
     print(temp_map.print_all_attractions())
     map_used = map_type(node_file, edge_file, site_name)
 
+    node_track = []
     while True:
         msg = input("\nWhat would you like to know about " + site_name + "? "
                     + black_bold + "\n1. Route from one location to another. "
@@ -221,7 +215,7 @@ def user_interface():
                     "\n7. the nearest foodplace \n8. Quit the program\
                     \n9. Start another navigation query \n"  + endc)
         if msg == "1":
-            node_to_node(map_used)
+            node_to_node(map_used, node_track, site_name)
         elif msg == "2":
             node_info(map_used)
         elif msg == "3":
