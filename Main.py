@@ -154,7 +154,7 @@ def node_to_node(map: Map):
 
 def map_type(map: Map):
     while True:
-        ada = input("Would you a handicapped-accessible route? \n1.Yes\n2.No\n")
+        ada = input("Would you need a handicapped-accessible route? \n1.Yes\n2.No\n")
         if ada == "1":
             map = Map(node_file, edge_file, True)
             print("This is %s map. "% site_name)
@@ -192,10 +192,61 @@ def user_interface():
     # print all attractions alphabetically
     print(map_img.print_all_attractions())
 
-    map_type()
+    map_type(map_img)
 
     while True:
-        msg = input("\nWhat would you like to know about? \n1. ")
+        msg = input("\nWhat would you like to know about? \n1. Route from one location to another. "
+                    "\n2. Detailed information about one location\
+                    \n3. All attractions that are suitable for disabled people "
+                    "\n4. Whether a given location is suitable for disabled people \
+                    \n5. All attractions that are open at a given time \n6. The nearest bathroom "
+                    "\n7. the nearest foodplace \n8. Quit the program\
+                    \n9. Start another navigation query")
+        if msg == "1":
+            node_to_node(map_img)
+        elif msg == "2":
+            node_info(map_img)
+        elif msg == "3":
+            map_img.all_disabled_friendly_node()
+        elif msg == "4":
+            while True:
+                try:
+                    node_num = eval(input("Please type in the location number: \n"))
+                except:
+                    print("Invalid input. Please try again!")
+                    continue
+                else:
+                    map_img.disabled_friendly_node(node_num)
+                    break
+        elif msg == "5":
+            time = input("Please type in the time you are interested: \n")
+            map_img.attractions_open(time)
+        elif msg == "6":
+            while True:
+                try:
+                    cur_loc = eval(input("Please type in your current location number: \n"))
+                except:
+                    print("Invalid input. Please try again!")
+                    continue
+                else:
+                    map_img.find_nearest_bathroom(cur_loc)
+                    break
+        elif msg == "7":
+            while True:
+                try:
+                    cur_loc = eval(input("Please type in your current location number: \n"))
+                except:
+                    print("Invalid input. Please try again!")
+                    continue
+                else:
+                    map_img.find_nearest_foodplace(cur_loc)
+                    break
+        elif msg == "8":
+            exit()
+        elif msg =="9":
+            pass
+        else:
+            print("Invalid input. Please try again!")
 
 
 if __name__ == "__main__":
