@@ -203,7 +203,7 @@ class Map:
         else:
             raise ValueError("Unexpected edges!")
 
-    def print_all_attractions(self):
+    def print_all_attractions(self, number_order=False):
         """
         Display all attractions alphabetically
         :return: print formatted locations
@@ -212,9 +212,11 @@ class Map:
         print_info = ""
         for (idx, attr) in self._map.nodes.items():
             sort_attraction[idx] = attr['name']
-        all_attractions = sorted(sort_attraction.items(), key=lambda x: x[1])
+        if number_order is False:
+            all_attractions = sorted(sort_attraction.items(), key=lambda x: x[1])
+        else:
+            all_attractions = sorted(sort_attraction.items(), key=lambda x: x[0])
         for attraction in all_attractions:
-            #print('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3}'.format(attraction[1], attraction[0]))
             print_info += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{:<50} {:>3} \n'.format(attraction[1], attraction[0])
         return print_info
 
@@ -273,8 +275,6 @@ class Map:
         # "12PM"
         elif len(timestring) == 4:
             format_time = timestring[:-2].ljust(4, '0') + timestring[-2:]
-        # elif len(timestring) == 5:
-        #     format_time = timestring.zfill(6)
         else:
             format_time = timestring
         time_format = "%I%M%p"
@@ -435,7 +435,7 @@ class Map:
                              width=edge_water_width, with_labels=True, font_size=16, label=unique_type[i])
         nx.draw_networkx_edge_labels(self._map, node_pos, edge_labels=edge_water_label, font_size=13)
 
-        text_msg = self.print_all_attractions()
+        text_msg = self.print_all_attractions(number_order=True)
         # reformat (print all attractions)
         text_msg = text_msg.split('\n')
         msg = ''
