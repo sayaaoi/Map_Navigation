@@ -137,7 +137,8 @@ def node_to_node(map: Map, node_track: list, site_name: str):
                 else:
                     node_track.append(next_node)
                     map.print_shortest_route(node_track[node_track.index(next_node) - 1], next_node)
-                    route_viz.draw_route(node_track[node_track.index(next_node) - 1], next_node, site_name, map.get_map())
+                    route_viz.draw_route(node_track[node_track.index(next_node) - 1],
+                                         next_node, site_name, map.get_map())
                     break
             break
 
@@ -211,25 +212,27 @@ def user_interface():
                     "\n2. Detailed information about one location\
                     \n3. All attractions that are suitable for disabled people "
                     "\n4. Whether a given location is suitable for disabled people \
-                    \n5. All attractions that are open at a given time \n6. The nearest bathroom "
+                    \n5. All attractions that are open at a given time "
+                    "\n6. The nearest bathroom "
                     "\n7. the nearest foodplace \n8. Quit the program\
-                    \n9. Start another navigation query \n"  + endc)
+                    \n9. Start another navigation query \n" + endc)
         if msg == "1":
             node_to_node(map_used, node_track, site_name)
         elif msg == "2":
             node_info(map_used)
         elif msg == "3":
-            map_used.all_disabled_friendly_node()
+            print(map_used.all_disabled_friendly_node())
         elif msg == "4":
             while True:
                 try:
                     node_num = eval(input("Please type in the location number: \n"))
                 except:
                     print(red_col + "Invalid input. Please try again!" + endc)
-                    print(red_col + "Invalid input. Please try again!" + endc)
                     continue
+                if node_num not in map_used.get_map().nodes:
+                    print(red_col + "Invalid location number. Please type again." + endc)
                 else:
-                    map_used.disabled_friendly_node(node_num)
+                    print(map_used.disabled_friendly_node(node_num))
                     break
         elif msg == "5":
             time = input("Please type in the time you are interested: \n")
@@ -241,8 +244,10 @@ def user_interface():
                 except:
                     print(red_col + "Invalid input. Please try again!" + endc)
                     continue
+                if cur_loc not in map_used.get_map().nodes:
+                    print(red_col + "Invalid location number. Please type again." + endc)
                 else:
-                    map_used.find_nearest_bathroom(cur_loc)
+                    print(map_used.find_nearest_bathroom(cur_loc))
                     break
         elif msg == "7":
             while True:
@@ -251,8 +256,10 @@ def user_interface():
                 except:
                     print(red_col + "Invalid input. Please try again!" + endc)
                     continue
+                if cur_loc not in map_used.get_map().nodes:
+                    print(red_col + "Invalid location number. Please type again." + endc)
                 else:
-                    map_used.find_nearest_foodplace(cur_loc)
+                    print(map_used.find_nearest_foodplace(cur_loc))
                     break
         elif msg == "8":
             exit()
@@ -264,5 +271,4 @@ def user_interface():
 
 if __name__ == "__main__":
     user_interface()
-    #print(new_map())
 
