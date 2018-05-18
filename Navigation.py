@@ -206,6 +206,7 @@ class Map:
     def print_all_attractions(self, number_order=False):
         """
         Display all attractions alphabetically
+        :param: number_order: whether attractions are displayed by numbers or alphabetically
         :return: print formatted locations
         """
         sort_attraction = {}
