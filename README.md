@@ -30,9 +30,10 @@ instructions with total distance.
 > 9. **Start another navigation query.**
 
 ### Demo
-![output flow](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output_flow1.png)
+![output flow](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output1.png)
 ![full map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/full%20map%20example.png 'Sample full map of Xcaret Amusement Park') <br>
-![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/route_map.png)
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output2.png)
+![route map](https://github.com/sayaaoi/Map_Navigation/blob/master/Sample/output3.png)
 
 ## Visualization
 
