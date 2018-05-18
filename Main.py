@@ -209,13 +209,14 @@ def user_interface():
     while True:
         msg = input("\nWhat would you like to know about " + site_name + "? "
                     + black_bold + "\n1. Route from one location to another. "
-                    "\n2. Detailed information about one location\
-                    \n3. All attractions that are suitable for disabled people "
-                    "\n4. Whether a given location is suitable for disabled people \
-                    \n5. All attractions that are open at a given time "
+                    "\n2. Detailed information about one location"
+                    "\n3. All attractions that are suitable for disabled people "
+                    "\n4. Whether a given location is suitable for disabled people "
+                    "\n5. All attractions that are open at a given time "
                     "\n6. The nearest bathroom "
-                    "\n7. the nearest foodplace \n8. Quit the program\
-                    \n9. Start another navigation query \n" + endc)
+                    "\n7. the nearest foodplace "
+                    "\n8. Quit the program"
+                    "\n9. Start another navigation query \n" + endc)
         if msg == "1":
             node_to_node(map_used, node_track, site_name)
         elif msg == "2":
@@ -235,8 +236,17 @@ def user_interface():
                     print(map_used.disabled_friendly_node(node_num))
                     break
         elif msg == "5":
-            time = input("Please type in the time you are interested: \n")
-            map_used.attractions_open(time)
+            while True:
+                time = input("Please type in the time you are interested: \n")
+                try:
+                    temp = map_used.attractions_open(time)
+                except:
+                    print("Invalid input. Please try again!")
+                    continue
+                if temp == "Sorry the range of minute is [0,60] and the range of hour is [0,12]":
+                    print("Sorry the range of minute is [0,60] and the range of hour is [0,12]. Please try again!")
+                else:
+                    break
         elif msg == "6":
             while True:
                 try:
