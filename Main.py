@@ -185,7 +185,7 @@ def user_interface():
                     continue
 
             print(blue_bold + """=========================== Welcome to %s ============================
-                                -------- Attraction names and ID numbers -------- \n""" % site_name + endc)
+                    -------- Attraction names and ID numbers -------- \n""" % site_name + endc)
 
             # print all attractions alphabetically
             temp_map = Map(node_file, edge_file, False)
