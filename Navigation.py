@@ -355,7 +355,8 @@ class Map:
                 direction = self.get_direction(paths[i - 1][0], path[0])
                 if i == len(paths) - 1:
                     print("Finally, go {0} to your destination: {2}({1})".format(direction, path[0], path[1]))
-                    print("The total distance is: ", round(nx.dijkstra_path_length(self.get_map(), start, end, weight='distance')/1000, 2), "miles")
+                    print("The total distance is: ", round(nx.dijkstra_path_length(self.get_map(), start, end,
+                                                           weight='distance')/1000, 2), "miles")
                 else:
                     print("Then, go {0} to {2}({1})".format(direction, path[0], path[1]))
 
@@ -425,7 +426,7 @@ class Map:
         unique_type = list(set(list(node_type.values())))
         unique_type_num = len(unique_type)
         # list of unique colors mapping with unique_type by index
-        type_color = [random.choice(color_name) for i in range(unique_type_num)]
+        type_color = [random.choice(color_name) for _ in range(unique_type_num)]
 
         type_node_map = {}
         for type in unique_type:
