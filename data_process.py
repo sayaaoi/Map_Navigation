@@ -18,6 +18,7 @@ import math
 
 def euclidean_distance(x1: int, y1: int, x2: int, y2: int):
     return math.sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2))
+    # return math.hypot(x1 - x2, y1 - y2)
 
 # The following code only run once to get edge_list_new.csv
 # ==========================================================================================
